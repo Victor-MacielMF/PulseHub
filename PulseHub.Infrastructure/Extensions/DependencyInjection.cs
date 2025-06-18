@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PulseHub.Domain.Interfaces;
 using PulseHub.Infrastructure.Data;
+using PulseHub.Infrastructure.Repositories;
 
 namespace Pulsehub.Infrastructure.Extensions
 {
@@ -14,6 +16,9 @@ namespace Pulsehub.Infrastructure.Extensions
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             // Aqui futuramente também registra repositórios, services, etc.
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ISyncEventRepository, SyncEventRepository>();
+            services.AddScoped<IQueueMessageRepository, QueueMessageRepository>();
 
             return services;
         }
