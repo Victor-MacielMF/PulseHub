@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace PulseHub.Domain
+namespace PulseHub.Domain.Entities
 {
     public class SyncEvent
     {
@@ -12,12 +12,12 @@ namespace PulseHub.Domain
         public string EventType { get; set; } = string.Empty;
         public DateTime EventDate { get; set; } = DateTime.UtcNow;
         public string Status { get; set; } = string.Empty;
-        public string? Message { get; set; }
+        public string Message { get; set; }
 
         //Relacionamento
-        public ICollection<QueueMessage> QueueMessage { get; set; } = new List<QueueMessage>();
+        public ICollection<QueueMessage> QueueMessages { get; set; } = new List<QueueMessage>();
 
         //Navegação
-        public Product? Product { get; set; }
+        public Product Product { get; set; }
     }
 }

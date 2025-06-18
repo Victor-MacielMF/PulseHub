@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
-namespace PulseHub.Domain
+namespace PulseHub.Domain.Entities
 {
     public class Product
     {
@@ -13,7 +12,7 @@ namespace PulseHub.Domain
         public int Stock {  get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get;set; } = DateTime.UtcNow ;
-        public bool IsActived { get; set; } = true ;
+        public bool IsActive { get; set; } = true ;
 
         //Relacionamentos
         public ICollection<SyncEvent> SyncEvents { get; set; } = new List<SyncEvent>();

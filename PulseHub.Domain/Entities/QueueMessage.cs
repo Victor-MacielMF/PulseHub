@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PulseHub.Domain
+namespace PulseHub.Domain.Entities
 {
     public class QueueMessage
     {
@@ -12,6 +12,6 @@ namespace PulseHub.Domain
         public bool IsProcessed { get; set; } = true;
 
         //Navegação
-        public SyncEvent? SyncEvent { get; set; }
+        public SyncEvent SyncEvent { get; set; }
     }
 }
