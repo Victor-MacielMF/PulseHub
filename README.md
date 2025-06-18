@@ -52,6 +52,49 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 ```
 
 ---
+
+## 🔧 Como executar as Migrations (Entity Framework)
+
+Para criar o banco de dados e aplicar a estrutura definida no projeto, execute os comandos abaixo utilizando o Entity Framework Core CLI.
+
+### ✔️ Passo 1 – Gerar uma Migration (se necessário)
+
+Acesse a pasta `PulseHub.Infrastructure` e execute o seguinte comando:
+```
+dotnet ef migrations add NomeDaMigration --startup-project ../PulseHub.API
+```
+Observação: Esse comando cria uma nova migration. Caso você já tenha a migration chamada `InitialCreate`, não precisa executar esse comando novamente.
+
+
+
+### ✔️ Passo 2 – Aplicar as Migrations no Banco de Dados
+
+Ainda dentro da pasta `PulseHub.Infrastructure`, execute:
+```
+dotnet ef database update --startup-project ../PulseHub.API
+```
+Esse comando cria o banco de dados e aplica toda a estrutura de tabelas, constraints e relacionamentos automaticamente.
+
+
+
+### ✔️ Observações importantes
+
+- O parâmetro --startup-project ../PulseHub.API é necessário porque o projeto PulseHub.API contém as configurações de ambiente, como a connection string no arquivo appsettings.json. Porém, quem fornece o DbContext para as migrations em tempo de desenvolvimento (design-time) é a classe PulseHubDbContextFactory, localizada no projeto PulseHub.Infrastructure.
+
+
+
+### ✔️ Pré-requisitos para rodar as migrations
+
+- Ter o SQL Server instalado e configurado localmente ou na nuvem.
+- A connection string deve estar corretamente configurada no arquivo `appsettings.json` dentro do projeto `PulseHub.API`.
+
+Exemplo de connection string no arquivo `appsettings.json`:
+
+"ConnectionStrings": {
+  "DefaultConnection": "Server=localhost;Database=PulseHubDb;Trusted_Connection=True;TrustServerCertificate=True;"
+}
+
+
 ---
 
 ## 🏗️ Diagrama de Arquitetura
