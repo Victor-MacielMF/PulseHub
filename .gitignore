@@ -1,0 +1,93 @@
+# Build results
+bin/
+obj/
+out/
+TestResults/
+Generated_Code/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Visual Studio
+.vs/
+.vscode/
+.vsconfig
+
+# Mac
+.DS_Store
+
+# Logs
+*.log
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Rider IDE
+.idea/
+*.sln.iml
+
+# Dotnet artifacts
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Entity Framework Migrations (if generated snapshots)
+*Migrations/*Designer.cs
+*Migrations/*Snapshot.cs
+*Migrations/*.resx
+
+# NuGet
+*.nupkg
+packages/
+*.snupkg
+
+# Others
+*.env
+*.local
+*.db
+*.sqlite
+*.bak
+*.backup
+*.mdf
+*.ldf
+
+# Node (para o Angular futuramente)
+node_modules/
+dist/
+build/
+
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Angular output
+.angular/
+
+# Compiled source #
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Coverage reports
+coverage/
+.nyc_output/
+lcov-report/
+
+# Publish outputs
+publish/
+
+# Secrets (se algum dia usar dotenv ou configs locais)
+secrets.json
+
+# Docker
+**/*.pid
