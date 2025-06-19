@@ -1,6 +1,6 @@
 # PulseHub – Plataforma de Sincronização de Estoques Multicanal
 
-🚀 Estrutura  – Clean Architecture + DDD
+🚀 Estrutura – Clean Architecture + DDD
 
 ---
 
@@ -24,6 +24,7 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 - ✔️ Desacoplamento total entre camadas, seguindo práticas de microserviços
 - ✔️ Padrões de design aplicados: **Repository, Unit of Work, Mediator, Factory, Strategy**
 - ✔️ GitFlow aplicado no versionamento
+- ✔️ Testes de integração implementados para repositórios, garantindo qualidade e segurança na persistência dos dados
 
 ---
 
@@ -41,14 +42,16 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 
 ## 📂 Estrutura do Projeto
 
+
 ```
 /PulseHub
-	├── PulseHub.API → Camada de apresentação (Controllers, Startup, Program)
-	├── PulseHub.Application → Camada de aplicação (Services, DTOs, Interfaces)
-	├── PulseHub.Domain → Camada de domínio (Entities, Aggregates, Interfaces dos Repositórios)
-	├── PulseHub.Infrastructure → Camada de infraestrutura (EF Core, Repositórios, Acesso a Dados)
-	├── docs → Diagramas de Arquitetura e Modelagem de Entidades
-	└── PulseHub.sln → Arquivo da solução
+├── PulseHub.API → Camada de apresentação (Controllers, Startup, Program)
+├── PulseHub.Application → Camada de aplicação (Services, DTOs, Interfaces)
+├── PulseHub.Domain → Camada de domínio (Entities, Aggregates, Interfaces dos Repositórios)
+├── PulseHub.Infrastructure → Camada de infraestrutura (EF Core, Repositórios, Acesso a Dados)
+├── PulseHub.Infrastructure.Tests → Testes de integração dos repositórios
+├── docs → Diagramas de Arquitetura e Modelagem de Entidades
+└── PulseHub.sln → Arquivo da solução
 ```
 
 ---
@@ -65,23 +68,24 @@ dotnet ef migrations add NomeDaMigration --startup-project ../PulseHub.API
 ```
 Observação: Esse comando cria uma nova migration. Caso você já tenha a migration chamada `InitialCreate`, não precisa executar esse comando novamente.
 
-
+---
 
 ### ✔️ Passo 2 – Aplicar as Migrations no Banco de Dados
 
 Ainda dentro da pasta `PulseHub.Infrastructure`, execute:
+
 ```
 dotnet ef database update --startup-project ../PulseHub.API
 ```
 Esse comando cria o banco de dados e aplica toda a estrutura de tabelas, constraints e relacionamentos automaticamente.
 
-
+---
 
 ### ✔️ Observações importantes
 
-- O parâmetro --startup-project ../PulseHub.API é necessário porque o projeto PulseHub.API contém as configurações de ambiente, como a connection string no arquivo appsettings.json. Porém, quem fornece o DbContext para as migrations em tempo de desenvolvimento (design-time) é a classe PulseHubDbContextFactory, localizada no projeto PulseHub.Infrastructure.
+- O parâmetro `--startup-project ../PulseHub.API` é necessário porque o projeto PulseHub.API contém as configurações de ambiente, como a connection string no arquivo `appsettings.json`. Porém, quem fornece o DbContext para as migrations em tempo de desenvolvimento (design-time) é a classe `PulseHubDbContextFactory`, localizada no projeto PulseHub.Infrastructure.
 
-
+---
 
 ### ✔️ Pré-requisitos para rodar as migrations
 
@@ -90,10 +94,40 @@ Esse comando cria o banco de dados e aplica toda a estrutura de tabelas, constra
 
 Exemplo de connection string no arquivo `appsettings.json`:
 
+```
 "ConnectionStrings": {
   "DefaultConnection": "Server=localhost;Database=PulseHubDb;Trusted_Connection=True;TrustServerCertificate=True;"
 }
+```
 
+
+---
+
+## 🧪 Testes de Integração
+
+O projeto conta com testes de integração dos repositórios, garantindo que as operações de persistência estejam funcionando corretamente.
+
+### ✔️ Executando os testes de integração
+
+Acesse a raiz do projeto de testes:
+```
+cd PulseHub.Infrastructure.Tests
+```
+
+Execute os testes:
+```
+dotnet test
+```
+
+### ✔️ O que é testado:
+
+- Operações de CRUD dos repositórios:
+  - **ProductRepository**
+  - **SyncEventRepository**
+  - **QueueMessageRepository**
+- Cada teste cria um banco isolado em memória.
+- Usa FluentAssertions para validações legíveis.
+- Garante que cada repositório funciona corretamente antes de avançar para outras camadas.
 
 ---
 
@@ -117,7 +151,7 @@ Exemplo de connection string no arquivo `appsettings.json`:
 - **Frontend:** Angular + Angular Material + RxJS
 - **Versionamento:** Git + GitFlow
 - **Documentação:** Swagger (OpenAPI)
-- **Testes:** NUnit + Moq
+- **Testes:** xUnit, FluentAssertions, EF InMemory
 
 ---
 
