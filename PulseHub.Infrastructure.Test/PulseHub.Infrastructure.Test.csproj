@@ -21,4 +21,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Pulsehub.Infrastructure\PulseHub.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
