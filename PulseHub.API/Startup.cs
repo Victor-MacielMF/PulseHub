@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Pulsehub.Infrastructure.Extensions;
-using AutoMapper;
 using System.Reflection;
 
 
