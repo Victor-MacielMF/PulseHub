@@ -37,5 +37,14 @@ namespace PulseHub.Application.Mappings.Extensions
                 IsActive = entity.IsActive
             };
         }
+
+        public static void UpdateEntity(this ProductRequestDto dto, Product entity)
+        {
+            entity.Name = dto.Name;
+            entity.Description = dto.Description;
+            entity.Price = dto.Price;
+            entity.Stock = dto.Stock;
+            entity.UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

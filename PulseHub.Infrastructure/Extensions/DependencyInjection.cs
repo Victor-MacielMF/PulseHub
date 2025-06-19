@@ -20,6 +20,8 @@ namespace Pulsehub.Infrastructure.Extensions
             services.AddScoped<ISyncEventRepository, SyncEventRepository>();
             services.AddScoped<IQueueMessageRepository, QueueMessageRepository>();
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             return services;
         }
     }

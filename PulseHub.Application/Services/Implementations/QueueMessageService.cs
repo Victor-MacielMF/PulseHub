@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PulseHub.Application.Services.Interfaces
+namespace PulseHub.Application.Services.Implementations
 {
     internal class QueueMessageService
     {

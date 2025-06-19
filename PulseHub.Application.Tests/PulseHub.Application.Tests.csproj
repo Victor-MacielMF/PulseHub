@@ -23,8 +23,11 @@
 
   <ItemGroup>
     <Folder Include="Mocks\" />
-    <Folder Include="TestHelpers\" />
-    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PulseHub.Application\PulseHub.Application.csproj" />
+    <ProjectReference Include="..\PulseHub.Domain\PulseHub.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PulseHub.Application.Services.Interfaces
 {
-    internal class SyncEventService
+    internal class IQueueMessageService
     {
     }
 }
