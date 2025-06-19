@@ -1,4 +1,4 @@
-﻿namespace PulseHub.Infrastructure.Test.Repositories
+﻿namespace PulseHub.Infrastructure.Tests.Repositories
 {
     public class QueueMessageRepositoryTests
     {

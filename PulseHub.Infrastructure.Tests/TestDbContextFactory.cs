@@ -2,7 +2,7 @@
 using PulseHub.Infrastructure.Data;
 using System;
 
-namespace PulseHub.Infrastructure.Test
+namespace PulseHub.Infrastructure.Tests
 {
     public static class TestDbContextFactory
     {
