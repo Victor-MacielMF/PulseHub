@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using PulseHub.Application.DTOs;
+using PulseHub.Domain.Entities;
 
 namespace PulseHub.Application.Mappings.Profiles
 {
-    internal class SyncEventProfile
+    public class SyncEventProfile : Profile
     {
+        public SyncEventProfile()
+        {
+            // Mapeia de SyncEvent para SyncEventResponseDto
+            CreateMap<SyncEvent, SyncEventResponseDto>();
+
+            // Mapeia de SyncEventResponseDto para SyncEvent (se precisar)
+            CreateMap<SyncEventResponseDto, SyncEvent>();
+        }
     }
 }

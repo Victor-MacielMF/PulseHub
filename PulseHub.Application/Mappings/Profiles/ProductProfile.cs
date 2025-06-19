@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using PulseHub.Application.DTOs;
+using PulseHub.Domain.Entities;
 
 namespace PulseHub.Application.Mappings.Profiles
 {
-    internal class ProductProfile
+    public class ProductProfile : Profile
     {
+        public ProductProfile()
+        {
+            // Mapeia de Product para ProductResponseDto
+            CreateMap<Product, ProductResponseDto>();
+
+            // Mapeia de ProductResponseDto para Product (se precisar)
+            CreateMap<ProductResponseDto, Product>();
+        }
     }
 }

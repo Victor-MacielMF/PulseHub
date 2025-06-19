@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using PulseHub.Application.DTOs;
+using PulseHub.Domain.Entities;
 
 namespace PulseHub.Application.Mappings.Profiles
 {
-    internal class QueueMessageProfile
+    public class QueueMessageProfile : Profile
     {
+        public QueueMessageProfile()
+        {
+            // Mapeia de QueueMessage para QueueMessageResponseDto
+            CreateMap<QueueMessage, QueueMessageResponseDto>();
+
+            // Mapeia de QueueMessageResponseDto para QueueMessage (se precisar)
+            CreateMap<QueueMessageResponseDto, QueueMessage>();
+        }
     }
 }
