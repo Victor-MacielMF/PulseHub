@@ -46,15 +46,42 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 ```
 /PulseHub
 ├── PulseHub.API → Camada de apresentação (Controllers, Startup, Program)
-├── PulseHub.Application → Camada de aplicação (Services, DTOs, Interfaces)
+├── PulseHub.Application → Camada de aplicação (Services, DTOs, Mappings, Interfaces)
+│   ├── DTOs → Definição dos contratos de dados (Request e Response)
+│   ├── Mappings
+│   │   ├── Extensions → Mapeamentos manuais entre DTOs e Entidades
+│   │   └── Profiles → Configurações do AutoMapper para mapeamento automático
+│   └── Services → Implementação das regras de negócio
 ├── PulseHub.Domain → Camada de domínio (Entities, Aggregates, Interfaces dos Repositórios)
 ├── PulseHub.Infrastructure → Camada de infraestrutura (EF Core, Repositórios, Acesso a Dados)
 ├── PulseHub.Infrastructure.Tests → Testes de integração dos repositórios
 ├── docs → Diagramas de Arquitetura e Modelagem de Entidades
 └── PulseHub.sln → Arquivo da solução
+
 ```
 
 ---
+
+## 🔀 Mapeamento (DTO ↔️ Entidades)
+
+O projeto adota duas abordagens para mapear os dados entre as camadas de API e domínio:
+
+- ✔️ **Mapeamento Manual (Extensions):**  
+Utilizado nos casos em que é necessário ter mais controle sobre a transformação dos dados, especialmente nas operações de entrada (**Request**). Permite aplicar regras, configurar valores padrão, ignorar campos ou realizar qualquer tipo de pré-processamento antes de transformar o dado em entidade de domínio.
+
+- ✔️ **Mapeamento Automático (AutoMapper - Profiles):**  
+Aplicado principalmente na saída (**Response**), onde o mapeamento é direto e não exige transformações complexas. O uso do AutoMapper reduz código repetitivo e mantém os controllers e services mais limpos.
+
+### 📁 Estrutura dos mapeamentos:
+
+```
+PulseHub.Application
+└── Mappings
+├── Extensions → Métodos de mapeamento manual (ex.: ProductMappingExtensions.cs)
+└── Profiles → Configuração do AutoMapper (ex.: ProductProfile.cs)
+```
+
+Essa combinação permite o equilíbrio entre controle e produtividade, onde demonstro domínio sobre ambas as abordagens, aplicando a melhor solução para cada contexto.
 
 ## 🔧 Como executar as Migrations (Entity Framework)
 
