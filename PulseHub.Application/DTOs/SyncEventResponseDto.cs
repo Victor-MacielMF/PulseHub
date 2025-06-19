@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PulseHub.Application.DTOs
 {
-    internal class SyncEventResponseDto
+    public class SyncEventResponseDto
     {
+        public Guid SyncEventId { get; set; }
+        public Guid ProductId { get; set; }
+        public string EventType { get; set; } = null!;
+        public DateTime EventDate { get; set; }
+        public string Status { get; set; } = null!;
+        public string? Message { get; set; }
     }
 }

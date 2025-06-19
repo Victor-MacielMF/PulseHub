@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PulseHub.Application.DTOs
 {
-    internal class QueueMessageResponseDto
+    public class QueueMessageResponseDto
     {
+        public Guid QueueMessageId { get; set; }
+        public Guid SyncEventId { get; set; }
+        public string Payload { get; set; } = null!;
+        public DateTime PublishedAt { get; set; }
+        public bool IsProcessed { get; set; }
     }
 }
