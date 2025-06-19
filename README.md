@@ -24,7 +24,7 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 - ✔️ Desacoplamento total entre camadas, seguindo práticas de microserviços
 - ✔️ Padrões de design aplicados: **Repository, Unit of Work, Mediator, Factory, Strategy**
 - ✔️ GitFlow aplicado no versionamento
-- ✔️ Testes de integração implementados para repositórios, garantindo qualidade e segurança na persistência dos dados
+- ✔️ Testes de integração implementados para repositórios
 - ✔️ Testes unitários implementados para os serviços da camada Application
 
 ---
@@ -53,19 +53,19 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 │ │ ├── Extensions → Mapeamentos manuais entre DTOs e Entidades
 │ │ └── Profiles → Configurações do AutoMapper para mapeamento automático
 │ └── Services
-│ ├── Interfaces → Contratos dos serviços
-│ └── Implementations → Implementação das regras de negócio
+│ ├── Interfaces → Contratos dos serviços (definem o que cada serviço faz)
+│ └── Implementations → Implementação das regras de negócio dos serviços
 ├── PulseHub.Domain → Camada de domínio (Entities, Aggregates, Interfaces dos Repositórios)
-├── PulseHub.Infrastructure → Camada de infraestrutura (EF Core, Repositórios, Acesso a Dados)
+├── PulseHub.Infrastructure → Camada de infraestrutura (EF Core, Repositórios, UnitOfWork, Acesso a Dados)
 ├── PulseHub.Infrastructure.Tests → Testes de integração dos repositórios
 ├── PulseHub.Application.Tests → Testes unitários da camada Application
-│ ├── Services
-│ ├── Mocks
-│ └── TestHelpers
+│ ├── Services → Testes unitários dos serviços (ProductService, SyncEventService, QueueMessageService)
+│ └── TestHelpers → Builders, dados fake e utilitários de apoio para os testes
 ├── docs → Diagramas de Arquitetura e Modelagem de Entidades
 └── PulseHub.sln → Arquivo da solução
 
 ```
+
 
 ---
 
@@ -80,6 +80,7 @@ Utilizado nos casos em que é necessário ter mais controle sobre a transformaç
 Aplicado principalmente na saída (**Response**), onde o mapeamento é direto e não exige transformações complexas.
 
 ### 📁 Estrutura dos mapeamentos:
+
 
 ```
 PulseHub.Application
@@ -164,16 +165,15 @@ dotnet test
 - Garante que cada repositório funciona corretamente antes de avançar para outras camadas.
 
 ---
-## 🧪 Testes de Integração
+## 🧪 Testes Unitários da Camada Application
 
-O projeto conta com testes de integração dos repositórios, garantindo que as operações de persistência estejam funcionando corretamente.
+O projeto conta com testes unitários para os serviços da camada de Application, garantindo que as regras de negócio estejam funcionando corretamente.
 
-### ✔️ Estrutura dos testes de integração:
+### ✔️ Estrutura dos testes unitários:
 ```
-PulseHub.Infrastructure.Tests
-├── Services → Testes dos repositórios
-├── TestHelpers → Builders, dados fake, utilitários
-└── Mocks → (opcional) mocks auxiliares
+PulseHub.Application.Tests
+├── Services → Testes dos serviços
+└── TestHelpers → Builders, dados fake, utilitários
 ```
 
 ### ✔️ Executando os testes de integração
@@ -181,7 +181,7 @@ PulseHub.Infrastructure.Tests
 Acesse a raiz do projeto de testes:
 
 ```
-cd PulseHub.Infrastructure.Tests
+cd PulseHub.Application.Tests
 ```
 
 Execute os testes:
@@ -189,6 +189,21 @@ Execute os testes:
 ```
 dotnet test
 ```
+
+### ✔️ O que é testado:
+
+- Operações dos serviços da camada Application:
+  - **ProductService**
+  - **SyncEventService**
+  - **QueueMessageService**
+- Verificações como:
+  - Busca por ID
+  - Listagem de registros
+  - Exclusão
+  - Comportamento esperado quando não encontrar registros
+- Uso de **Moq** para mocks de repositórios e unit of work
+- FluentAssertions para garantir clareza nos asserts
+- Builders criados para dados consistentes nos testes
 
 ---
 
@@ -212,7 +227,7 @@ dotnet test
 - **Frontend:** Angular + Angular Material + RxJS
 - **Versionamento:** Git + GitFlow
 - **Documentação:** Swagger (OpenAPI)
-- **Testes:** xUnit, FluentAssertions, Moq,EF InMemory
+- **Testes:** xUnit, FluentAssertions, Moq, EF InMemory
 
 ---
 
