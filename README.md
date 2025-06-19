@@ -25,6 +25,7 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 - ✔️ Padrões de design aplicados: **Repository, Unit of Work, Mediator, Factory, Strategy**
 - ✔️ GitFlow aplicado no versionamento
 - ✔️ Testes de integração implementados para repositórios, garantindo qualidade e segurança na persistência dos dados
+- ✔️ Testes unitários implementados para os serviços da camada Application
 
 ---
 
@@ -47,14 +48,20 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 /PulseHub
 ├── PulseHub.API → Camada de apresentação (Controllers, Startup, Program)
 ├── PulseHub.Application → Camada de aplicação (Services, DTOs, Mappings, Interfaces)
-│   ├── DTOs → Definição dos contratos de dados (Request e Response)
-│   ├── Mappings
-│   │   ├── Extensions → Mapeamentos manuais entre DTOs e Entidades
-│   │   └── Profiles → Configurações do AutoMapper para mapeamento automático
-│   └── Services → Implementação das regras de negócio
+│ ├── DTOs → Definição dos contratos de dados (Request e Response)
+│ ├── Mappings
+│ │ ├── Extensions → Mapeamentos manuais entre DTOs e Entidades
+│ │ └── Profiles → Configurações do AutoMapper para mapeamento automático
+│ └── Services
+│ ├── Interfaces → Contratos dos serviços
+│ └── Implementations → Implementação das regras de negócio
 ├── PulseHub.Domain → Camada de domínio (Entities, Aggregates, Interfaces dos Repositórios)
 ├── PulseHub.Infrastructure → Camada de infraestrutura (EF Core, Repositórios, Acesso a Dados)
 ├── PulseHub.Infrastructure.Tests → Testes de integração dos repositórios
+├── PulseHub.Application.Tests → Testes unitários da camada Application
+│ ├── Services
+│ ├── Mocks
+│ └── TestHelpers
 ├── docs → Diagramas de Arquitetura e Modelagem de Entidades
 └── PulseHub.sln → Arquivo da solução
 
@@ -67,10 +74,10 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 O projeto adota duas abordagens para mapear os dados entre as camadas de API e domínio:
 
 - ✔️ **Mapeamento Manual (Extensions):**  
-Utilizado nos casos em que é necessário ter mais controle sobre a transformação dos dados, especialmente nas operações de entrada (**Request**). Permite aplicar regras, configurar valores padrão, ignorar campos ou realizar qualquer tipo de pré-processamento antes de transformar o dado em entidade de domínio.
+Utilizado nos casos em que é necessário ter mais controle sobre a transformação dos dados, especialmente nas operações de entrada (**Request**).
 
 - ✔️ **Mapeamento Automático (AutoMapper - Profiles):**  
-Aplicado principalmente na saída (**Response**), onde o mapeamento é direto e não exige transformações complexas. O uso do AutoMapper reduz código repetitivo e mantém os controllers e services mais limpos.
+Aplicado principalmente na saída (**Response**), onde o mapeamento é direto e não exige transformações complexas.
 
 ### 📁 Estrutura dos mapeamentos:
 
@@ -157,6 +164,33 @@ dotnet test
 - Garante que cada repositório funciona corretamente antes de avançar para outras camadas.
 
 ---
+## 🧪 Testes de Integração
+
+O projeto conta com testes de integração dos repositórios, garantindo que as operações de persistência estejam funcionando corretamente.
+
+### ✔️ Estrutura dos testes de integração:
+```
+PulseHub.Infrastructure.Tests
+├── Services → Testes dos repositórios
+├── TestHelpers → Builders, dados fake, utilitários
+└── Mocks → (opcional) mocks auxiliares
+```
+
+### ✔️ Executando os testes de integração
+
+Acesse a raiz do projeto de testes:
+
+```
+cd PulseHub.Infrastructure.Tests
+```
+
+Execute os testes:
+
+```
+dotnet test
+```
+
+---
 
 ## 🏗️ Diagrama de Arquitetura
 
@@ -178,7 +212,7 @@ dotnet test
 - **Frontend:** Angular + Angular Material + RxJS
 - **Versionamento:** Git + GitFlow
 - **Documentação:** Swagger (OpenAPI)
-- **Testes:** xUnit, FluentAssertions, EF InMemory
+- **Testes:** xUnit, FluentAssertions, Moq,EF InMemory
 
 ---
 
