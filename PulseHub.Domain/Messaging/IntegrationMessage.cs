@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PulseHub.Infrastructure.Messaging.Models
+namespace PulseHub.Domain.Messaging
 {
     public class IntegrationMessage
     {

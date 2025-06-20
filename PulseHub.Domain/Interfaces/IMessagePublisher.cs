@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace PulseHub.Infrastructure.Messaging.Interfaces
+namespace PulseHub.Domain.Interfaces
 {
     public interface IMessagePublisher
     {

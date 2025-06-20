@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PulseHub.Application.Services.Implementations;
 using PulseHub.Application.Services.Interfaces;
 using PulseHub.Domain.Interfaces;
+using PulseHub.Domain.Messaging;
 using PulseHub.Infrastructure.Data;
 using PulseHub.Infrastructure.Messaging.Implementations;
 using PulseHub.Infrastructure.Messaging.Interfaces;
@@ -34,6 +35,7 @@ namespace Pulsehub.Infrastructure.Extensions
 
             // Mensageria
             services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();
+            services.AddSingleton<IMessagePublisher, RabbitMQPublisher>();
 
             return services;
         }

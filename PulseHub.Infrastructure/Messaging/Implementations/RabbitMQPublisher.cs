@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PulseHub.Domain.Interfaces;
 using PulseHub.Infrastructure.Messaging.Interfaces;
 using PulseHub.Infrastructure.Messaging.Settings;
 using RabbitMQ.Client;
