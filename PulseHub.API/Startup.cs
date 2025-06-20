@@ -32,7 +32,17 @@ namespace PulseHub.API
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PulseHub.API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "PulseHub API",
+                    Version = "v1",
+                    Description = "API para gerenciamento de produtos e sincronização com marketplaces.",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "João Victor Maciel de Freitas",
+                        Email = "joaovictormacieldefreitas@gmail.com"
+                    }
+                });
             });
 
             // AutoMapper
