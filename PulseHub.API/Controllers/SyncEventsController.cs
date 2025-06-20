@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PulseHub.Application.DTOs;
 using PulseHub.Application.Services.Interfaces;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace PulseHub.API.Controllers
 {
+    /// <summary>
+    /// Controller responsável por consultar os eventos de sincronização dos produtos.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class SyncEventsController : ControllerBase
@@ -20,7 +24,15 @@ namespace PulseHub.API.Controllers
             _syncEventService = syncEventService;
         }
 
+        /// <summary>
+        /// Retorna todos os eventos de sincronização.
+        /// </summary>
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Listar eventos de sincronização",
+            Description = "Retorna uma lista de todos os eventos de sincronização registrados no sistema."
+        )]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<SyncEventResponseDto>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
         {
             var stopwatch = Stopwatch.StartNew();
@@ -41,7 +53,16 @@ namespace PulseHub.API.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Retorna um evento de sincronização específico pelo ID.
+        /// </summary>
         [HttpGet("{id:guid}")]
+        [SwaggerOperation(
+            Summary = "Obter evento de sincronização por ID",
+            Description = "Retorna os dados de um evento de sincronização específico pelo seu ID."
+        )]
+        [ProducesResponseType(typeof(ApiResponse<SyncEventResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<object>), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetById(Guid id)
         {
             var stopwatch = Stopwatch.StartNew();
