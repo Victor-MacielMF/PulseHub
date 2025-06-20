@@ -43,8 +43,85 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 
 ---
 
-## 📂 Estrutura do Projeto
+## 📬 Infraestrutura de Mensageria – RabbitMQ (Simulando Amazon SQS)
 
+O projeto PulseHub implementa uma arquitetura orientada a eventos utilizando mensageria assíncrona com **RabbitMQ**, simulando o comportamento do **Amazon SQS**.
+
+---
+
+### 🚀 Como funciona?
+
+- Cada vez que um produto é criado, atualizado ou excluído, um **evento de sincronização** é publicado em uma fila chamada `sync-events-queue`.
+- Esse evento representa uma tentativa de sincronizar aquela ação com um marketplace externo (no MVP, futuramente Mercado Livre, etc.).
+- O RabbitMQ armazena essas mensagens na fila de forma **durável e persistente**, garantindo que nenhuma atualização seja perdida mesmo que haja falhas na API.
+- Um serviço separado (**Consumer Service**) é responsável por consumir as mensagens dessa fila e processá-las.
+
+---
+
+### 🏗️ Estrutura da Mensageria
+
+- ✔️ **Fila:** `sync-events-queue`  
+→ Responsável por armazenar todos os eventos de sincronização de produtos.
+
+- ✔️ **Publisher:**  
+→ Implementado na própria API. Toda vez que um produto é alterado (**Create, Update, Delete**), a API publica uma mensagem nessa fila.
+
+- ✔️ **Consumer:**  
+→ Serviço separado, desenvolvido em .NET, que escuta essa fila, consome os eventos e executa ações como simular integrações com marketplaces ou atualizar status no banco.
+
+---
+
+### 🎯 Por que RabbitMQ?
+
+- O RabbitMQ está sendo utilizado para simular um cenário real que, em produção, poderia ser facilmente migrado para serviços como **AWS SQS**, **Azure Service Bus**, **Google Pub/Sub**, entre outros.
+- A decisão de utilizar o RabbitMQ local tem como objetivo simplificar a configuração, acelerar o desenvolvimento local e reduzir custos de infraestrutura.
+
+---
+
+### 🔧 Configuração da Fila
+
+- **Nome da fila:** `sync-events-queue`
+- **Durabilidade:** ✔️ **Durable** (Persistente)
+- **Auto Delete:** ❌ Desabilitado
+- **Exclusive:** ❌ Desabilitado
+
+---
+
+### 🌐 Acesso ao Painel do RabbitMQ
+
+Após instalar e habilitar o plugin de gerenciamento, você pode acessar o painel administrativo via navegador:
+
+
+```
+http://localhost:15672
+```
+
+
+- **Usuário:** guest  
+- **Senha:** guest  
+
+---
+
+### ✅ Funcionamento Resumido do Fluxo
+
+
+```
+	[ API (.NET) ]
+		↓ (Publica eventos)
+	[ RabbitMQ (sync-events-queue) ]
+		↓ (Consumer escuta)
+	[ Consumer (.NET) ]
+		↓ (Processamento)
+	[ SQL Server + Simulação Marketplace ]
+```
+
+---
+
+Essa abordagem desacopla os processos de escrita e leitura, melhora a escalabilidade, permite resiliência em caso de falhas e simula um ambiente realista de microsserviços, adotando uma estratégia robusta de mensageria assíncrona.
+
+---
+
+## 📂 Estrutura do Projeto
 
 ```
 /PulseHub
@@ -67,7 +144,6 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 │ └── TestHelpers → Builders, dados fake, utilitários
 ├── docs → Diagramas de Arquitetura e Modelagem de Entidades
 └── PulseHub.sln → Arquivo da solução
-
 ```
 
 
@@ -85,15 +161,17 @@ Aplicado principalmente na saída (**Response**), onde o mapeamento é direto e 
 
 ### 📁 Estrutura dos mapeamentos:
 
-
 ```
 PulseHub.Application
 └─────── Mappings
-	├── Extensions → Métodos de mapeamento manual (ex.: ProductMappingExtensions.cs)
-	└── Profiles → Configuração do AutoMapper (ex.: ProductProfile.cs)
+├── Extensions → Métodos de mapeamento manual (ex.: ProductMappingExtensions.cs)
+└── Profiles → Configuração do AutoMapper (ex.: ProductProfile.cs)
 ```
 
+
 Essa combinação permite o equilíbrio entre controle e produtividade, onde demonstro domínio sobre ambas as abordagens, aplicando a melhor solução para cada contexto.
+
+---
 
 ## 🔧 Como executar as Migrations (Entity Framework)
 
@@ -102,10 +180,13 @@ Para criar o banco de dados e aplicar a estrutura definida no projeto, execute o
 ### ✔️ Passo 1 – Gerar uma Migration (se necessário)
 
 Acesse a pasta `PulseHub.Infrastructure` e execute o seguinte comando:
+
 ```
 dotnet ef migrations add NomeDaMigration --startup-project ../PulseHub.API
 ```
-Observação: Esse comando cria uma nova migration. Caso você já tenha a migration chamada `InitialCreate`, não precisa executar esse comando novamente.
+
+
+> Observação: Esse comando cria uma nova migration. Caso você já tenha a migration chamada `InitialCreate`, não precisa executar esse comando novamente.
 
 ---
 
@@ -116,6 +197,8 @@ Ainda dentro da pasta `PulseHub.Infrastructure`, execute:
 ```
 dotnet ef database update --startup-project ../PulseHub.API
 ```
+
+
 Esse comando cria o banco de dados e aplica toda a estrutura de tabelas, constraints e relacionamentos automaticamente.
 
 ---
@@ -135,10 +218,9 @@ Exemplo de connection string no arquivo `appsettings.json`:
 
 ```
 "ConnectionStrings": {
-  "DefaultConnection": "Server=localhost;Database=PulseHubDb;Trusted_Connection=True;TrustServerCertificate=True;"
+"DefaultConnection": "Server=localhost;Database=PulseHubDb;Trusted_Connection=True;TrustServerCertificate=True;"
 }
 ```
-
 
 ---
 
@@ -149,11 +231,13 @@ O projeto conta com testes de integração dos repositórios, garantindo que as 
 ### ✔️ Executando os testes de integração
 
 Acesse a raiz do projeto de testes:
+
 ```
 cd PulseHub.Infrastructure.Tests
 ```
 
 Execute os testes:
+
 ```
 dotnet test
 ```
@@ -169,18 +253,21 @@ dotnet test
 - Garante que cada repositório funciona corretamente antes de avançar para outras camadas.
 
 ---
+
 ## 🧪 Testes Unitários da Camada Application
 
 O projeto conta com testes unitários para os serviços da camada de Application, garantindo que as regras de negócio estejam funcionando corretamente.
 
 ### ✔️ Estrutura dos testes unitários:
+
 ```
 PulseHub.Application.Tests
 ├── Services → Testes dos serviços
 └── TestHelpers → Builders, dados fake, utilitários
 ```
 
-### ✔️ Executando os testes de integração
+
+### ✔️ Executando os testes
 
 Acesse a raiz do projeto de testes:
 
@@ -188,11 +275,13 @@ Acesse a raiz do projeto de testes:
 cd PulseHub.Application.Tests
 ```
 
+
 Execute os testes:
 
 ```
 dotnet test
 ```
+
 
 ### ✔️ O que é testado:
 
@@ -206,7 +295,7 @@ dotnet test
   - Exclusão
   - Comportamento esperado quando não encontrar registros
 - Uso de **Moq** para mocks de repositórios e unit of work
-- FluentAssertions para garantir clareza nos asserts
+- **FluentAssertions** para garantir clareza nos asserts
 - Builders criados para dados consistentes nos testes
 
 ---
