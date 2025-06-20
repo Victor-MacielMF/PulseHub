@@ -81,19 +81,6 @@ namespace PulseHub.API.Controllers
         {
             var stopwatch = Stopwatch.StartNew();
 
-            if (!ModelState.IsValid)
-            {
-                stopwatch.Stop();
-                return BadRequest(new ApiResponse<object>
-                {
-                    Success = false,
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = "Invalid request data",
-                    Errors = new List<string> { "Validation errors in request" },
-                    DurationInMilliseconds = stopwatch.ElapsedMilliseconds
-                });
-            }
-
             var createdProduct = await _productService.CreateAsync(request);
 
             stopwatch.Stop();
@@ -115,19 +102,6 @@ namespace PulseHub.API.Controllers
         public async Task<IActionResult> Update(Guid id, [FromBody] ProductRequestDto request)
         {
             var stopwatch = Stopwatch.StartNew();
-
-            if (!ModelState.IsValid)
-            {
-                stopwatch.Stop();
-                return BadRequest(new ApiResponse<object>
-                {
-                    Success = false,
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = "Invalid request data",
-                    Errors = new List<string> { "Validation errors in request" },
-                    DurationInMilliseconds = stopwatch.ElapsedMilliseconds
-                });
-            }
 
             var updatedProduct = await _productService.UpdateAsync(id, request);
 
