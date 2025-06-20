@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Pulsehub.Infrastructure.Extensions;
+using PulseHub.Application.Mappings.Profiles;
 using System.Reflection;
 
 
@@ -31,7 +32,10 @@ namespace PulseHub.API
             });
 
             // AutoMapper
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(
+                Assembly.GetExecutingAssembly(),              // Procura na camada API
+                typeof(ProductProfile).Assembly               // Procura na camada Application
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
