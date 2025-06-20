@@ -5,6 +5,8 @@ using PulseHub.Application.Services.Implementations;
 using PulseHub.Application.Services.Interfaces;
 using PulseHub.Domain.Interfaces;
 using PulseHub.Infrastructure.Data;
+using PulseHub.Infrastructure.Messaging.Implementations;
+using PulseHub.Infrastructure.Messaging.Interfaces;
 using PulseHub.Infrastructure.Repositories;
 
 namespace Pulsehub.Infrastructure.Extensions
@@ -29,6 +31,9 @@ namespace Pulsehub.Infrastructure.Extensions
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ISyncEventService, SyncEventService>();
             services.AddScoped<IQueueMessageService, QueueMessageService>();
+
+            // Mensageria
+            services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();
 
             return services;
         }

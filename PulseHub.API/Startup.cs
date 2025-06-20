@@ -10,6 +10,9 @@ using Pulsehub.Infrastructure.Extensions;
 using PulseHub.API.Middlewares;
 using PulseHub.Application.DTOs;
 using PulseHub.Application.Mappings.Profiles;
+using PulseHub.Infrastructure.Messaging.Implementations;
+using PulseHub.Infrastructure.Messaging.Interfaces;
+using PulseHub.Infrastructure.Messaging.Settings;
 using System.Linq;
 using System.Reflection;
 
@@ -80,6 +83,9 @@ namespace PulseHub.API
             {
                 c.EnableAnnotations();
             });
+
+            services.Configure<RabbitMQSettings>(
+                Configuration.GetSection("RabbitMQ"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
