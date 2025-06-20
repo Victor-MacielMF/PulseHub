@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PulseHub.Application.DTOs;
 using PulseHub.Application.Services.Interfaces;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace PulseHub.API.Controllers
 {
+    /// <summary>
+    /// Controller responsável por gerenciar produtos.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
@@ -20,8 +24,15 @@ namespace PulseHub.API.Controllers
             _productService = productService;
         }
 
-        // GET: api/products
+        /// <summary>
+        /// Retorna todos os produtos cadastrados.
+        /// </summary>
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Listar todos os produtos",
+            Description = "Retorna uma lista com todos os produtos cadastrados no sistema."
+        )]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<ProductResponseDto>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
         {
             var stopwatch = Stopwatch.StartNew();
@@ -42,8 +53,16 @@ namespace PulseHub.API.Controllers
             return Ok(response);
         }
 
-        // GET: api/products/{id}
+        /// <summary>
+        /// Retorna um produto específico pelo seu ID.
+        /// </summary>
         [HttpGet("{id:guid}")]
+        [SwaggerOperation(
+            Summary = "Obter produto por ID",
+            Description = "Retorna os dados de um produto específico pelo seu ID."
+        )]
+        [ProducesResponseType(typeof(ApiResponse<ProductResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<object>), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetById(Guid id)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -75,8 +94,15 @@ namespace PulseHub.API.Controllers
             return Ok(response);
         }
 
-        // POST: api/products
+        /// <summary>
+        /// Cria um novo produto.
+        /// </summary>
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Criar um novo produto",
+            Description = "Cadastra um novo produto no sistema."
+        )]
+        [ProducesResponseType(typeof(ApiResponse<ProductResponseDto>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> Create([FromBody] ProductRequestDto request)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -97,8 +123,16 @@ namespace PulseHub.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = createdProduct.ProductId }, response);
         }
 
-        // PUT: api/products/{id}
+        /// <summary>
+        /// Atualiza um produto existente.
+        /// </summary>
         [HttpPut("{id:guid}")]
+        [SwaggerOperation(
+            Summary = "Atualizar um produto",
+            Description = "Atualiza os dados de um produto específico."
+        )]
+        [ProducesResponseType(typeof(ApiResponse<ProductResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<object>), (int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Update(Guid id, [FromBody] ProductRequestDto request)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -119,8 +153,15 @@ namespace PulseHub.API.Controllers
             return Ok(response);
         }
 
-        // DELETE: api/products/{id}
+        /// <summary>
+        /// Remove um produto pelo seu ID.
+        /// </summary>
         [HttpDelete("{id:guid}")]
+        [SwaggerOperation(
+            Summary = "Excluir um produto",
+            Description = "Remove um produto específico do sistema pelo seu ID."
+        )]
+        [ProducesResponseType(typeof(ApiResponse<object>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var stopwatch = Stopwatch.StartNew();

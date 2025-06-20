@@ -13,7 +13,6 @@ using PulseHub.Application.Mappings.Profiles;
 using System.Linq;
 using System.Reflection;
 
-
 namespace PulseHub.API
 {
     public class Startup
@@ -65,6 +64,11 @@ namespace PulseHub.API
 
                     return new BadRequestObjectResult(response);
                 };
+            });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.EnableAnnotations();
             });
         }
 
