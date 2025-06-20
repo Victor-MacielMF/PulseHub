@@ -24,6 +24,8 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 - ✔️ Desacoplamento total entre camadas, seguindo práticas de microserviços
 - ✔️ Padrões de design aplicados: **Repository, Unit of Work, Mediator, Factory, Strategy**
 - ✔️ GitFlow aplicado no versionamento
+- ✔️ Respostas padronizadas para toda API usando `ApiResponse`
+- ✔️ Middleware global para tratamento de exceções
 - ✔️ Testes de integração implementados para repositórios
 - ✔️ Testes unitários implementados para os serviços da camada Application
 
@@ -46,21 +48,23 @@ Este projeto foi idealizado para demonstrar domínio técnico nas principais tec
 
 ```
 /PulseHub
-├── PulseHub.API → Camada de apresentação (Controllers, Startup, Program)
+├── PulseHub.API → Camada de apresentação (Controllers, Middlewares, Startup, Program)
+│ ├── Controllers → Endpoints da API
+│ ├── Middlewares → Tratamento global de exceções
 ├── PulseHub.Application → Camada de aplicação (Services, DTOs, Mappings, Interfaces)
-│ ├── DTOs → Definição dos contratos de dados (Request e Response)
+│ ├── DTOs → Definição dos contratos de dados (Request e Response + ApiResponse)
 │ ├── Mappings
 │ │ ├── Extensions → Mapeamentos manuais entre DTOs e Entidades
 │ │ └── Profiles → Configurações do AutoMapper para mapeamento automático
 │ └── Services
-│ ├── Interfaces → Contratos dos serviços (definem o que cada serviço faz)
-│ └── Implementations → Implementação das regras de negócio dos serviços
+│ ├── Interfaces → Contratos dos serviços
+│ └── Implementations → Implementação das regras de negócio
 ├── PulseHub.Domain → Camada de domínio (Entities, Aggregates, Interfaces dos Repositórios)
 ├── PulseHub.Infrastructure → Camada de infraestrutura (EF Core, Repositórios, UnitOfWork, Acesso a Dados)
 ├── PulseHub.Infrastructure.Tests → Testes de integração dos repositórios
 ├── PulseHub.Application.Tests → Testes unitários da camada Application
-│ ├── Services → Testes unitários dos serviços (ProductService, SyncEventService, QueueMessageService)
-│ └── TestHelpers → Builders, dados fake e utilitários de apoio para os testes
+│ ├── Services → Testes dos serviços
+│ └── TestHelpers → Builders, dados fake, utilitários
 ├── docs → Diagramas de Arquitetura e Modelagem de Entidades
 └── PulseHub.sln → Arquivo da solução
 
@@ -84,9 +88,9 @@ Aplicado principalmente na saída (**Response**), onde o mapeamento é direto e 
 
 ```
 PulseHub.Application
-└── Mappings
-├── Extensions → Métodos de mapeamento manual (ex.: ProductMappingExtensions.cs)
-└── Profiles → Configuração do AutoMapper (ex.: ProductProfile.cs)
+└─────── Mappings
+	├── Extensions → Métodos de mapeamento manual (ex.: ProductMappingExtensions.cs)
+	└── Profiles → Configuração do AutoMapper (ex.: ProductProfile.cs)
 ```
 
 Essa combinação permite o equilíbrio entre controle e produtividade, onde demonstro domínio sobre ambas as abordagens, aplicando a melhor solução para cada contexto.
