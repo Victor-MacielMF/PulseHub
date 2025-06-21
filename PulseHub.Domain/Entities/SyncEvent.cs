@@ -14,6 +14,9 @@ namespace PulseHub.Domain.Entities
         public string Status { get; set; } = string.Empty;
         public string Message { get; set; }
 
+        public int RetryCount { get; set; } = 0; // Quantas vezes tentou processar
+        public string? ErrorMessage { get; set; } // Último erro, se houver
+
         //Relacionamento
         public ICollection<QueueMessage> QueueMessages { get; set; } = new List<QueueMessage>();
 

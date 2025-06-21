@@ -10,5 +10,7 @@ namespace PulseHub.Application.DTOs
         public DateTime EventDate { get; set; }
         public string Status { get; set; } = null!;
         public string? Message { get; set; }
+        public string? ErrorMessage { get; set; }
+        public int RetryCount { get; set; }
     }
 }

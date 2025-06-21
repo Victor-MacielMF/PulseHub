@@ -15,7 +15,9 @@ namespace PulseHub.Application.Mappings.Extensions
                 EventType = entity.EventType,
                 EventDate = entity.EventDate,
                 Status = entity.Status,
-                Message = entity.Message
+                Message = entity.Message,
+                ErrorMessage = entity.ErrorMessage, 
+                RetryCount = entity.RetryCount 
             };
         }
     }

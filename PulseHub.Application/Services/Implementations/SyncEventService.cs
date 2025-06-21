@@ -87,6 +87,34 @@ namespace PulseHub.Application.Services.Implementations
             }
         }
 
+        public async Task MarkAsFailedAsync(Guid syncEventId, string errorMessage)
+        {
+            var syncEvent = await _syncEventRepository.GetByIdAsync(syncEventId);
+
+            if (syncEvent is null)
+                throw new Exception("Sync event not found.");
+
+            syncEvent.Status = "Failed";
+            syncEvent.ErrorMessage = errorMessage;
+            syncEvent.RetryCount += 1;
+
+            _syncEventRepository.Update(syncEvent);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task MarkAsProcessedAsync(Guid syncEventId)
+        {
+            var syncEvent = await _syncEventRepository.GetByIdAsync(syncEventId);
+
+            if (syncEvent is null)
+                throw new Exception("Sync event not found.");
+
+            syncEvent.Status = "Processed";
+            syncEvent.ErrorMessage = null;
+
+            _syncEventRepository.Update(syncEvent);
+            await _unitOfWork.SaveChangesAsync();
+        }
 
 
         private string GenerateEventMessage(string eventType, object data)
