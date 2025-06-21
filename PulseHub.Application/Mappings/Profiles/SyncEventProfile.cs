@@ -8,10 +8,7 @@ namespace PulseHub.Application.Mappings.Profiles
     {
         public SyncEventProfile()
         {
-            // Mapeia de SyncEvent para SyncEventResponseDto
             CreateMap<SyncEvent, SyncEventResponseDto>();
-
-            // Mapeia de SyncEventResponseDto para SyncEvent (se precisar)
             CreateMap<SyncEventResponseDto, SyncEvent>();
         }
     }

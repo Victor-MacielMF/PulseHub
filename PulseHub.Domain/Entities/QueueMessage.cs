@@ -10,9 +10,13 @@ namespace PulseHub.Domain.Entities
 
         public string Payload { get; set; } = string.Empty;
         public DateTime PublishedAt { get; set; } = DateTime.UtcNow;
-        public bool IsProcessed { get; set; } = true;
+        public bool IsProcessed { get; set; } = false;
 
-        //Navegação
+        public int RetryCount { get; set; } = 0;
+        public string? ErrorMessage { get; set; }
+        public DateTime? LastAttemptAt { get; set; }
+
+        // Navegação
         public SyncEvent SyncEvent { get; set; }
     }
 }

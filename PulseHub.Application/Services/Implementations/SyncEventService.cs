@@ -2,6 +2,7 @@
 using PulseHub.Application.DTOs;
 using PulseHub.Application.Services.Interfaces;
 using PulseHub.Domain.Entities;
+using PulseHub.Domain.Enums;
 using PulseHub.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -60,11 +61,9 @@ namespace PulseHub.Application.Services.Implementations
                 ProductId = ExtractProductId(data),
                 EventType = eventType,
                 EventDate = DateTime.UtcNow,
-                Status = "Pending",
+                Status = SyncEventStatus.Pending,
                 Message = GenerateEventMessage(eventType, data),
-                RetryCount = 0,
-                ErrorMessage = null,
-                Payload = payload // 🔥 Agora o Payload REAL do evento vai para o banco
+                Payload = payload
             };
 
             await _syncEventRepository.AddAsync(syncEvent);
@@ -78,26 +77,12 @@ namespace PulseHub.Application.Services.Implementations
             await _queueMessageService.DispatchEventAsync(syncEventId);
         }
 
-        public async Task MarkAsFailedAsync(Guid syncEventId, string errorMessage)
-        {
-            var syncEvent = await _syncEventRepository.GetByIdAsync(syncEventId)
-                             ?? throw new Exception("Sync event not found.");
-
-            syncEvent.Status = "Failed";
-            syncEvent.ErrorMessage = errorMessage;
-            syncEvent.RetryCount += 1;
-
-            _syncEventRepository.Update(syncEvent);
-            await _unitOfWork.SaveChangesAsync();
-        }
-
         public async Task MarkAsProcessedAsync(Guid syncEventId)
         {
             var syncEvent = await _syncEventRepository.GetByIdAsync(syncEventId)
                              ?? throw new Exception("Sync event not found.");
 
-            syncEvent.Status = "Processed";
-            syncEvent.ErrorMessage = null;
+            syncEvent.Status = SyncEventStatus.Completed;
 
             _syncEventRepository.Update(syncEvent);
             await _unitOfWork.SaveChangesAsync();

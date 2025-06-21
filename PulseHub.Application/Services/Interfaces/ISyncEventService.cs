@@ -12,8 +12,7 @@ namespace PulseHub.Application.Services.Interfaces
         Task<SyncEventResponseDto?> GetByIdAsync(Guid syncEventId);
         Task DeleteAsync(Guid syncEventId);
         Task<SyncEvent> RegisterSyncEventAsync(string eventType, object data);
-        Task MarkAsProcessedAsync(Guid syncEventId);
-        Task MarkAsFailedAsync(Guid syncEventId, string errorMessage);
         Task PublishToIntegrationAsync(Guid syncEventId);
+        Task MarkAsProcessedAsync(Guid syncEventId);
     }
 }

@@ -78,8 +78,6 @@ namespace PulseHub.Application.Services.Implementations
 
             foreach (var channel in _channels)
             {
-                await _publisher.PublishAsync(payload, channel);
-
                 var queueMessage = new QueueMessage
                 {
                     QueueMessageId = Guid.NewGuid(),
@@ -87,8 +85,26 @@ namespace PulseHub.Application.Services.Implementations
                     Payload = payload,
                     Channel = channel,
                     PublishedAt = DateTime.UtcNow,
-                    IsProcessed = false
+                    IsProcessed = false,
+                    RetryCount = 0,
+                    ErrorMessage = null,
+                    LastAttemptAt = null
                 };
+
+                try
+                {
+                    await _publisher.PublishAsync(payload, channel);
+
+                    queueMessage.IsProcessed = true;
+                    queueMessage.LastAttemptAt = DateTime.UtcNow;
+                }
+                catch (Exception ex)
+                {
+                    queueMessage.IsProcessed = false;
+                    queueMessage.ErrorMessage = ex.Message;
+                    queueMessage.RetryCount += 1;
+                    queueMessage.LastAttemptAt = DateTime.UtcNow;
+                }
 
                 await _queueMessageRepository.AddAsync(queueMessage);
             }

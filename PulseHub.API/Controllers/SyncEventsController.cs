@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace PulseHub.API.Controllers
 {
     /// <summary>
-    /// Controller responsável por consultar os eventos de sincronização dos produtos.
+    /// Controller responsible for managing sync events.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -25,12 +25,12 @@ namespace PulseHub.API.Controllers
         }
 
         /// <summary>
-        /// Retorna todos os eventos de sincronização.
+        /// Get all sync events.
         /// </summary>
         [HttpGet]
         [SwaggerOperation(
-            Summary = "Listar eventos de sincronização",
-            Description = "Retorna uma lista de todos os eventos de sincronização registrados no sistema."
+            Summary = "List sync events",
+            Description = "Returns all sync events. Status reflects the overall event process: Pending, Processing, Completed, Failed."
         )]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<SyncEventResponseDto>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
@@ -39,28 +39,26 @@ namespace PulseHub.API.Controllers
 
             var events = await _syncEventService.GetAllAsync();
 
+            stopwatch.Stop();
 
-            var response = new ApiResponse<IEnumerable<SyncEventResponseDto>>
+            return Ok(new ApiResponse<IEnumerable<SyncEventResponseDto>>
             {
                 Success = true,
                 StatusCode = (int)HttpStatusCode.OK,
                 Message = "Sync events retrieved successfully",
                 Data = events,
-                DurationInMilliseconds = stopwatch.ElapsedMilliseconds
-            };
-
-            stopwatch.Stop();
-
-            return Ok(response);
+                DurationInMilliseconds = stopwatch.ElapsedMilliseconds,
+                Timestamp = DateTime.UtcNow
+            });
         }
 
         /// <summary>
-        /// Retorna um evento de sincronização específico pelo ID.
+        /// Get a sync event by ID.
         /// </summary>
         [HttpGet("{id:guid}")]
         [SwaggerOperation(
-            Summary = "Obter evento de sincronização por ID",
-            Description = "Retorna os dados de um evento de sincronização específico pelo seu ID."
+            Summary = "Get sync event by ID",
+            Description = "Returns the sync event by its ID. Error handling and retries are managed per channel in QueueMessages."
         )]
         [ProducesResponseType(typeof(ApiResponse<SyncEventResponseDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), (int)HttpStatusCode.NotFound)]
@@ -79,20 +77,20 @@ namespace PulseHub.API.Controllers
                     Success = false,
                     StatusCode = (int)HttpStatusCode.NotFound,
                     Message = "Sync event not found",
-                    DurationInMilliseconds = stopwatch.ElapsedMilliseconds
+                    DurationInMilliseconds = stopwatch.ElapsedMilliseconds,
+                    Timestamp = DateTime.UtcNow
                 });
             }
 
-            var response = new ApiResponse<SyncEventResponseDto>
+            return Ok(new ApiResponse<SyncEventResponseDto>
             {
                 Success = true,
                 StatusCode = (int)HttpStatusCode.OK,
                 Message = "Sync event retrieved successfully",
                 Data = syncEvent,
-                DurationInMilliseconds = stopwatch.ElapsedMilliseconds
-            };
-
-            return Ok(response);
+                DurationInMilliseconds = stopwatch.ElapsedMilliseconds,
+                Timestamp = DateTime.UtcNow
+            });
         }
     }
 }

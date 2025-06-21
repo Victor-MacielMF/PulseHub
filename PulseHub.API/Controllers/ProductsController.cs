@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace PulseHub.API.Controllers
 {
     /// <summary>
-    /// Controller responsável por gerenciar produtos.
+    /// Controller responsible for managing products.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -25,12 +25,12 @@ namespace PulseHub.API.Controllers
         }
 
         /// <summary>
-        /// Retorna todos os produtos, com opção de filtrar por ativos ou inativos.
+        /// Get all products with optional filter for active or inactive.
         /// </summary>
         [HttpGet]
         [SwaggerOperation(
-            Summary = "Listar todos os produtos",
-            Description = "Retorna uma lista de produtos. Se o parâmetro 'isActive' não for informado, serão retornados todos os produtos (ativos e inativos). Para filtrar, utilize 'isActive=true' para produtos ativos ou 'isActive=false' para produtos inativos."
+            Summary = "List all products",
+            Description = "Returns all products. Use the 'isActive' query parameter to filter by active (true) or inactive (false) products. If not provided, returns all products regardless of status."
         )]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ProductResponseDto>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll([FromQuery] bool? isActive)
@@ -41,25 +41,24 @@ namespace PulseHub.API.Controllers
 
             stopwatch.Stop();
 
-            var response = new ApiResponse<IEnumerable<ProductResponseDto>>
+            return Ok(new ApiResponse<IEnumerable<ProductResponseDto>>
             {
                 Success = true,
                 StatusCode = (int)HttpStatusCode.OK,
                 Message = "Products retrieved successfully",
                 Data = products,
-                DurationInMilliseconds = stopwatch.ElapsedMilliseconds
-            };
-
-            return Ok(response);
+                DurationInMilliseconds = stopwatch.ElapsedMilliseconds,
+                Timestamp = DateTime.UtcNow
+            });
         }
 
         /// <summary>
-        /// Retorna um produto específico pelo seu ID.
+        /// Get a product by ID.
         /// </summary>
         [HttpGet("{id:guid}")]
         [SwaggerOperation(
-            Summary = "Obter produto por ID",
-            Description = "Retorna os dados de um produto específico pelo seu ID."
+            Summary = "Get product by ID",
+            Description = "Returns product details for the specified ID."
         )]
         [ProducesResponseType(typeof(ApiResponse<ProductResponseDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), (int)HttpStatusCode.NotFound)]
@@ -78,30 +77,29 @@ namespace PulseHub.API.Controllers
                     Success = false,
                     StatusCode = (int)HttpStatusCode.NotFound,
                     Message = "Product not found",
-                    DurationInMilliseconds = stopwatch.ElapsedMilliseconds
+                    DurationInMilliseconds = stopwatch.ElapsedMilliseconds,
+                    Timestamp = DateTime.UtcNow
                 });
             }
 
-            var response = new ApiResponse<ProductResponseDto>
+            return Ok(new ApiResponse<ProductResponseDto>
             {
                 Success = true,
                 StatusCode = (int)HttpStatusCode.OK,
                 Message = "Product retrieved successfully",
                 Data = product,
-                DurationInMilliseconds = stopwatch.ElapsedMilliseconds
-            };
-
-            return Ok(response);
+                DurationInMilliseconds = stopwatch.ElapsedMilliseconds,
+                Timestamp = DateTime.UtcNow
+            });
         }
 
-
         /// <summary>
-        /// Cria um novo produto.
+        /// Create a new product.
         /// </summary>
         [HttpPost]
         [SwaggerOperation(
-            Summary = "Criar um novo produto",
-            Description = "Cadastra um novo produto no sistema."
+            Summary = "Create a new product",
+            Description = "Registers a new product in the system."
         )]
         [ProducesResponseType(typeof(ApiResponse<ProductResponseDto>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> Create([FromBody] ProductRequestDto request)
@@ -112,25 +110,24 @@ namespace PulseHub.API.Controllers
 
             stopwatch.Stop();
 
-            var response = new ApiResponse<ProductResponseDto>
+            return CreatedAtAction(nameof(GetById), new { id = createdProduct.ProductId }, new ApiResponse<ProductResponseDto>
             {
                 Success = true,
                 StatusCode = (int)HttpStatusCode.Created,
                 Message = "Product created successfully",
                 Data = createdProduct,
-                DurationInMilliseconds = stopwatch.ElapsedMilliseconds
-            };
-
-            return CreatedAtAction(nameof(GetById), new { id = createdProduct.ProductId }, response);
+                DurationInMilliseconds = stopwatch.ElapsedMilliseconds,
+                Timestamp = DateTime.UtcNow
+            });
         }
 
         /// <summary>
-        /// Atualiza um produto existente.
+        /// Update an existing product.
         /// </summary>
         [HttpPut("{id:guid}")]
         [SwaggerOperation(
-            Summary = "Atualizar um produto",
-            Description = "Atualiza os dados de um produto específico."
+            Summary = "Update a product",
+            Description = "Updates the details of an existing product."
         )]
         [ProducesResponseType(typeof(ApiResponse<ProductResponseDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), (int)HttpStatusCode.NotFound)]
@@ -142,27 +139,26 @@ namespace PulseHub.API.Controllers
 
             stopwatch.Stop();
 
-            var response = new ApiResponse<ProductResponseDto>
+            return Ok(new ApiResponse<ProductResponseDto>
             {
                 Success = true,
                 StatusCode = (int)HttpStatusCode.OK,
                 Message = "Product updated successfully",
                 Data = updatedProduct,
-                DurationInMilliseconds = stopwatch.ElapsedMilliseconds
-            };
-
-            return Ok(response);
+                DurationInMilliseconds = stopwatch.ElapsedMilliseconds,
+                Timestamp = DateTime.UtcNow
+            });
         }
 
         /// <summary>
-        /// Desativa um produto pelo seu ID (Soft Delete).
+        /// Soft delete a product by marking it as inactive.
         /// </summary>
         [HttpDelete("{id:guid}")]
         [SwaggerOperation(
-            Summary = "Desativar um produto",
-            Description = "Realiza o soft delete de um produto, marcando ele como inativo no sistema."
+            Summary = "Deactivate a product",
+            Description = "Performs a soft delete by marking the product as inactive instead of removing it from the database."
         )]
-        [ProducesResponseType(typeof(ApiResponse<object>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<object>), (int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -171,15 +167,14 @@ namespace PulseHub.API.Controllers
 
             stopwatch.Stop();
 
-            var response = new ApiResponse<object>
+            return Ok(new ApiResponse<object>
             {
                 Success = true,
                 StatusCode = (int)HttpStatusCode.NoContent,
-                Message = "Product deleted successfully",
-                DurationInMilliseconds = stopwatch.ElapsedMilliseconds
-            };
-
-            return Ok(response);
+                Message = "Product deactivated successfully",
+                DurationInMilliseconds = stopwatch.ElapsedMilliseconds,
+                Timestamp = DateTime.UtcNow
+            });
         }
     }
 }

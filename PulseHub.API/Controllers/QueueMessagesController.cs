@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace PulseHub.API.Controllers
 {
     /// <summary>
-    /// Controller responsável por consultar as mensagens publicadas nas filas de integração.
+    /// Controller responsible for managing queue messages (integration per channel).
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -25,12 +25,12 @@ namespace PulseHub.API.Controllers
         }
 
         /// <summary>
-        /// Retorna todas as mensagens da fila.
+        /// Get all queue messages.
         /// </summary>
         [HttpGet]
         [SwaggerOperation(
-            Summary = "Listar mensagens da fila",
-            Description = "Retorna uma lista de todas as mensagens publicadas nas filas de integração."
+            Summary = "List queue messages",
+            Description = "Returns all queue messages for integrations. Tracks RetryCount, LastAttemptAt, ErrorMessage, and IsProcessed status per channel."
         )]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<QueueMessageResponseDto>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
@@ -41,7 +41,7 @@ namespace PulseHub.API.Controllers
 
             stopwatch.Stop();
 
-            var response = new ApiResponse<IEnumerable<QueueMessageResponseDto>>
+            return Ok(new ApiResponse<IEnumerable<QueueMessageResponseDto>>
             {
                 Success = true,
                 StatusCode = (int)HttpStatusCode.OK,
@@ -49,18 +49,16 @@ namespace PulseHub.API.Controllers
                 Data = messages,
                 DurationInMilliseconds = stopwatch.ElapsedMilliseconds,
                 Timestamp = DateTime.UtcNow
-            };
-
-            return Ok(response);
+            });
         }
 
         /// <summary>
-        /// Retorna uma mensagem da fila específica pelo ID.
+        /// Get a queue message by ID.
         /// </summary>
         [HttpGet("{id:guid}")]
         [SwaggerOperation(
-            Summary = "Obter mensagem da fila por ID",
-            Description = "Retorna os dados de uma mensagem da fila específica pelo seu ID."
+            Summary = "Get queue message by ID",
+            Description = "Returns a queue message by its ID, including details like RetryCount, LastAttemptAt, ErrorMessage, and status per channel."
         )]
         [ProducesResponseType(typeof(ApiResponse<QueueMessageResponseDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), (int)HttpStatusCode.NotFound)]
@@ -79,13 +77,12 @@ namespace PulseHub.API.Controllers
                     Success = false,
                     StatusCode = (int)HttpStatusCode.NotFound,
                     Message = "Queue message not found",
-                    Data = null,
                     DurationInMilliseconds = stopwatch.ElapsedMilliseconds,
                     Timestamp = DateTime.UtcNow
                 });
             }
 
-            var response = new ApiResponse<QueueMessageResponseDto>
+            return Ok(new ApiResponse<QueueMessageResponseDto>
             {
                 Success = true,
                 StatusCode = (int)HttpStatusCode.OK,
@@ -93,9 +90,7 @@ namespace PulseHub.API.Controllers
                 Data = message,
                 DurationInMilliseconds = stopwatch.ElapsedMilliseconds,
                 Timestamp = DateTime.UtcNow
-            };
-
-            return Ok(response);
+            });
         }
     }
 }

@@ -8,11 +8,7 @@ namespace PulseHub.Application.Mappings.Profiles
     {
         public QueueMessageProfile()
         {
-            // Mapeia de QueueMessage para QueueMessageResponseDto
-            CreateMap<QueueMessage, QueueMessageResponseDto>();
-
-            // Mapeia de QueueMessageResponseDto para QueueMessage (se precisar)
-            CreateMap<QueueMessageResponseDto, QueueMessage>();
+            CreateMap<QueueMessage, QueueMessageResponseDto>().ReverseMap();
         }
     }
 }

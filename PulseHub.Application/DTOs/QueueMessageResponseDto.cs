@@ -11,5 +11,8 @@ namespace PulseHub.Application.DTOs
         public DateTime PublishedAt { get; set; }
         public bool IsProcessed { get; set; }
 
+        public int RetryCount { get; set; }
+        public string? ErrorMessage { get; set; }
+        public DateTime? LastAttemptAt { get; set; }
     }
 }
