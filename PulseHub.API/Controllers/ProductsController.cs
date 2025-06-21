@@ -25,19 +25,19 @@ namespace PulseHub.API.Controllers
         }
 
         /// <summary>
-        /// Retorna todos os produtos cadastrados.
+        /// Retorna todos os produtos, com opção de filtrar por ativos ou inativos.
         /// </summary>
         [HttpGet]
         [SwaggerOperation(
             Summary = "Listar todos os produtos",
-            Description = "Retorna uma lista com todos os produtos cadastrados no sistema."
+            Description = "Retorna uma lista de produtos. Se o parâmetro 'isActive' não for informado, serão retornados todos os produtos (ativos e inativos). Para filtrar, utilize 'isActive=true' para produtos ativos ou 'isActive=false' para produtos inativos."
         )]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ProductResponseDto>>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] bool? isActive)
         {
             var stopwatch = Stopwatch.StartNew();
 
-            var products = await _productService.GetAllAsync();
+            var products = await _productService.GetAllAsync(isActive);
 
             stopwatch.Stop();
 
@@ -93,6 +93,7 @@ namespace PulseHub.API.Controllers
 
             return Ok(response);
         }
+
 
         /// <summary>
         /// Cria um novo produto.
@@ -154,12 +155,12 @@ namespace PulseHub.API.Controllers
         }
 
         /// <summary>
-        /// Remove um produto pelo seu ID.
+        /// Desativa um produto pelo seu ID (Soft Delete).
         /// </summary>
         [HttpDelete("{id:guid}")]
         [SwaggerOperation(
-            Summary = "Excluir um produto",
-            Description = "Remove um produto específico do sistema pelo seu ID."
+            Summary = "Desativar um produto",
+            Description = "Realiza o soft delete de um produto, marcando ele como inativo no sistema."
         )]
         [ProducesResponseType(typeof(ApiResponse<object>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Delete(Guid id)

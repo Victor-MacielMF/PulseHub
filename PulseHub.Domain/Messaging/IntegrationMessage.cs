@@ -2,11 +2,11 @@
 
 namespace PulseHub.Domain.Messaging
 {
-    public class IntegrationMessage
+    public class IntegrationMessage<T>
     {
         public Guid EventId { get; set; } = Guid.NewGuid();
-        public string EventType { get; set; } = null!;
+        public string EventType { get; set; } = string.Empty;
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
-        public object Data { get; set; } = null!;
+        public T Data { get; set; } = default!;
     }
 }

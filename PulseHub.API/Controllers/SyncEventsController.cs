@@ -39,7 +39,6 @@ namespace PulseHub.API.Controllers
 
             var events = await _syncEventService.GetAllAsync();
 
-            stopwatch.Stop();
 
             var response = new ApiResponse<IEnumerable<SyncEventResponseDto>>
             {
@@ -49,6 +48,8 @@ namespace PulseHub.API.Controllers
                 Data = events,
                 DurationInMilliseconds = stopwatch.ElapsedMilliseconds
             };
+
+            stopwatch.Stop();
 
             return Ok(response);
         }

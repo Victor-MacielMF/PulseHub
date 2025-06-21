@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using PulseHub.Application.DTOs;
 using PulseHub.Application.Services.Interfaces;
 using PulseHub.Domain.Entities;
 using PulseHub.Domain.Interfaces;
+using PulseHub.Domain.Messaging;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PulseHub.Application.Services.Implementations
@@ -12,17 +15,28 @@ namespace PulseHub.Application.Services.Implementations
     public class QueueMessageService : IQueueMessageService
     {
         private readonly IQueueMessageRepository _queueMessageRepository;
+        private readonly ISyncEventRepository _syncEventRepository;
+        private readonly IMessagePublisher _publisher;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly List<string> _channels;
 
         public QueueMessageService(
             IQueueMessageRepository queueMessageRepository,
+            ISyncEventRepository syncEventRepository,
+            IMessagePublisher publisher,
             IMapper mapper,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IConfiguration configuration)
         {
             _queueMessageRepository = queueMessageRepository;
+            _syncEventRepository = syncEventRepository;
+            _publisher = publisher;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+
+            _channels = configuration.GetSection("IntegrationChannels").Get<List<string>>()
+                        ?? throw new Exception("IntegrationChannels not found in configuration.");
         }
 
         public async Task<IEnumerable<QueueMessageResponseDto>> GetAllAsync()
@@ -39,43 +53,53 @@ namespace PulseHub.Application.Services.Implementations
 
         public async Task DeleteAsync(Guid queueMessageId)
         {
-            var message = await _queueMessageRepository.GetByIdAsync(queueMessageId);
-
-            if (message is null)
-                throw new Exception("Queue message not found.");
+            var message = await _queueMessageRepository.GetByIdAsync(queueMessageId)
+                          ?? throw new Exception("Queue message not found.");
 
             _queueMessageRepository.Delete(message);
             await _unitOfWork.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Registrar uma mensagem publicada na fila para um canal específico.
-        /// </summary>
-        public async Task RegisterQueueMessageAsync(Guid syncEventId, string payload, string channel)
+        public async Task DispatchEventAsync(Guid syncEventId)
         {
-            var message = new QueueMessage
-            {
-                QueueMessageId = Guid.NewGuid(),
-                SyncEventId = syncEventId,
-                Payload = payload,
-                Channel = channel,
-                PublishedAt = DateTime.UtcNow,
-                IsProcessed = false
-            };
+            var syncEvent = await _syncEventRepository.GetByIdAsync(syncEventId)
+                             ?? throw new Exception("Sync event not found.");
 
-            await _queueMessageRepository.AddAsync(message);
+            if (string.IsNullOrWhiteSpace(syncEvent.Payload))
+                throw new Exception("Sync event does not contain payload.");
+
+            var payload = JsonSerializer.Serialize(new IntegrationMessage<object>
+            {
+                EventId = syncEvent.SyncEventId,
+                EventType = syncEvent.EventType,
+                Timestamp = DateTime.UtcNow,
+                Data = JsonSerializer.Deserialize<object>(syncEvent.Payload)
+            });
+
+            foreach (var channel in _channels)
+            {
+                await _publisher.PublishAsync(payload, channel);
+
+                var queueMessage = new QueueMessage
+                {
+                    QueueMessageId = Guid.NewGuid(),
+                    SyncEventId = syncEvent.SyncEventId,
+                    Payload = payload,
+                    Channel = channel,
+                    PublishedAt = DateTime.UtcNow,
+                    IsProcessed = false
+                };
+
+                await _queueMessageRepository.AddAsync(queueMessage);
+            }
+
             await _unitOfWork.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Atualizar o status de uma mensagem como processada.
-        /// </summary>
         public async Task MarkAsProcessedAsync(Guid queueMessageId)
         {
-            var message = await _queueMessageRepository.GetByIdAsync(queueMessageId);
-
-            if (message is null)
-                throw new Exception("Queue message not found.");
+            var message = await _queueMessageRepository.GetByIdAsync(queueMessageId)
+                          ?? throw new Exception("Queue message not found.");
 
             message.IsProcessed = true;
 

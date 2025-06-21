@@ -1,4 +1,5 @@
 ﻿using PulseHub.Application.DTOs;
+using PulseHub.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,8 +11,9 @@ namespace PulseHub.Application.Services.Interfaces
         Task<IEnumerable<SyncEventResponseDto>> GetAllAsync();
         Task<SyncEventResponseDto?> GetByIdAsync(Guid syncEventId);
         Task DeleteAsync(Guid syncEventId);
-        Task RegisterSyncEventAsync(string eventType, object data);
+        Task<SyncEvent> RegisterSyncEventAsync(string eventType, object data);
         Task MarkAsProcessedAsync(Guid syncEventId);
         Task MarkAsFailedAsync(Guid syncEventId, string errorMessage);
+        Task PublishToIntegrationAsync(Guid syncEventId);
     }
 }

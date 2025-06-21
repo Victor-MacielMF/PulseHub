@@ -14,6 +14,8 @@ namespace PulseHub.Domain.Entities
         public string Status { get; set; } = string.Empty;
         public string Message { get; set; }
 
+        public string Payload { get; set; } = string.Empty;
+
         public int RetryCount { get; set; } = 0; // Quantas vezes tentou processar
         public string? ErrorMessage { get; set; } // Último erro, se houver
 

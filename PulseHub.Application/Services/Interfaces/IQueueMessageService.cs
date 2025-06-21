@@ -10,7 +10,15 @@ namespace PulseHub.Application.Services.Interfaces
         Task<IEnumerable<QueueMessageResponseDto>> GetAllAsync();
         Task<QueueMessageResponseDto?> GetByIdAsync(Guid queueMessageId);
         Task DeleteAsync(Guid queueMessageId);
-        Task RegisterQueueMessageAsync(Guid syncEventId, string payload, string channel);
+
+        /// <summary>
+        /// Publica um evento nas filas e registra uma QueueMessage para cada canal.
+        /// </summary>
+        Task DispatchEventAsync(Guid syncEventId);
+
+        /// <summary>
+        /// Atualiza o status da mensagem para processada.
+        /// </summary>
         Task MarkAsProcessedAsync(Guid queueMessageId);
     }
 }

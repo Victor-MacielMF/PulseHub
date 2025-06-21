@@ -28,9 +28,9 @@ namespace PulseHub.Application.Services.Implementations
             _syncEventService = syncEventService;
         }
 
-        public async Task<IEnumerable<ProductResponseDto>> GetAllAsync()
+        public async Task<IEnumerable<ProductResponseDto>> GetAllAsync(bool? isActive)
         {
-            var products = await _productRepository.GetAllAsync();
+            var products = await _productRepository.GetAllAsync(isActive);
             return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
         }
 
@@ -49,17 +49,16 @@ namespace PulseHub.Application.Services.Implementations
 
             var response = _mapper.Map<ProductResponseDto>(product);
 
-            await _syncEventService.RegisterSyncEventAsync("ProductCreated", response);
+            var syncEvent = await _syncEventService.RegisterSyncEventAsync("ProductCreated", response);
+            await _syncEventService.PublishToIntegrationAsync(syncEvent.SyncEventId);
 
             return response;
         }
 
         public async Task<ProductResponseDto> UpdateAsync(Guid productId, ProductRequestDto productDto)
         {
-            var product = await _productRepository.GetByIdAsync(productId);
-
-            if (product is null)
-                throw new Exception("Produto não encontrado.");
+            var product = await _productRepository.GetByIdAsync(productId)
+                          ?? throw new Exception("Produto não encontrado.");
 
             productDto.UpdateEntity(product);
 
@@ -68,22 +67,24 @@ namespace PulseHub.Application.Services.Implementations
 
             var response = _mapper.Map<ProductResponseDto>(product);
 
-            await _syncEventService.RegisterSyncEventAsync("ProductUpdated", response);
+            var syncEvent = await _syncEventService.RegisterSyncEventAsync("ProductUpdated", response);
+            await _syncEventService.PublishToIntegrationAsync(syncEvent.SyncEventId);
 
             return response;
         }
 
         public async Task DeleteAsync(Guid productId)
         {
-            var product = await _productRepository.GetByIdAsync(productId);
+            var product = await _productRepository.GetByIdAsync(productId)
+                          ?? throw new Exception("Produto não encontrado.");
 
-            if (product is null)
-                throw new Exception("Produto não encontrado.");
+            product.IsActive = false;
 
-            _productRepository.Delete(product);
+            _productRepository.Update(product);
             await _unitOfWork.SaveChangesAsync();
 
-            await _syncEventService.RegisterSyncEventAsync("ProductDeleted", new { ProductId = productId });
+            var syncEvent = await _syncEventService.RegisterSyncEventAsync("ProductDeleted", new { ProductId = productId });
+            await _syncEventService.PublishToIntegrationAsync(syncEvent.SyncEventId);
         }
     }
 }

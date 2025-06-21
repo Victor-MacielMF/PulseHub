@@ -4,6 +4,7 @@ using PulseHub.Domain.Interfaces;
 using PulseHub.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PulseHub.Infrastructure.Repositories
@@ -17,12 +18,18 @@ namespace PulseHub.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Product>> GetAllAsync()
+        public async Task<IEnumerable<Product>> GetAllAsync(bool? isActive)
         {
-            return await _context.Products
-                .AsNoTracking()
-                .ToListAsync();
+            var query = _context.Products.AsQueryable();
+
+            if (isActive.HasValue)
+            {
+                query = query.Where(p => p.IsActive == isActive.Value);
+            }
+
+            return await query.AsNoTracking().ToListAsync();
         }
+
 
         public async Task<Product?> GetByIdAsync(Guid id)
         {
@@ -43,7 +50,8 @@ namespace PulseHub.Infrastructure.Repositories
 
         public void Delete(Product product)
         {
-            _context.Products.Remove(product);
+            product.IsActive = false;
+            _context.Products.Update(product);
         }
     }
 }

@@ -12,5 +12,10 @@ namespace PulseHub.Application.DTOs
         public string? Message { get; set; }
         public string? ErrorMessage { get; set; }
         public int RetryCount { get; set; }
+
+        /// <summary>
+        /// Dados do evento (payload serializado no momento da geração)
+        /// </summary>
+        public string Payload { get; set; } = null!;
     }
 }
