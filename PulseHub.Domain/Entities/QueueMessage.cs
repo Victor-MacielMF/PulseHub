@@ -4,6 +4,7 @@ namespace PulseHub.Domain.Entities
 {
     public class QueueMessage
     {
+        public string Channel { get; set; } = string.Empty;
         public Guid QueueMessageId { get; set; } // PK
         public Guid SyncEventId { get; set; } // FK
 

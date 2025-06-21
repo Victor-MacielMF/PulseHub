@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PulseHub.Domain.Interfaces;
 using PulseHub.Infrastructure.Messaging.Implementations;
 using PulseHub.Infrastructure.Messaging.Interfaces;
 using PulseHub.Infrastructure.Messaging.Settings;
@@ -57,7 +58,7 @@ namespace PulseHub.Infrastructure.Tests.Messaging
 
             var json = JsonSerializer.Serialize(message);
 
-            Func<Task> act = async () => await publisher.PublishAsync(json);
+            Func<Task> act = async () => await publisher.PublishAsync(json, "tests");
 
             await act.Should().NotThrowAsync();
         }

@@ -85,6 +85,10 @@ namespace PulseHub.Infrastructure.Data
                 entity.Property(e => e.Payload)
                       .IsRequired();
 
+                entity.Property(e => e.Channel)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
                 entity.Property(e => e.PublishedAt)
                       .HasDefaultValueSql("GETUTCDATE()");
 

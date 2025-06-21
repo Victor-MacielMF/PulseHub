@@ -19,13 +19,19 @@ namespace PulseHub.Application.Tests.Services
     {
         private readonly Mock<ISyncEventRepository> _syncEventRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+        private readonly Mock<IMessagePublisher> _messagePublisherMock;
+        private readonly Mock<IQueueMessageService> _queueMessageServiceMock;
+
         private readonly IMapper _mapper;
         private readonly ISyncEventService _syncEventService;
+
 
         public SyncEventServiceTests()
         {
             _syncEventRepositoryMock = new Mock<ISyncEventRepository>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _messagePublisherMock = new Mock<IMessagePublisher>();
+            _queueMessageServiceMock = new Mock<IQueueMessageService>();
 
             var mapperConfig = new MapperConfiguration(cfg =>
             {
@@ -36,10 +42,13 @@ namespace PulseHub.Application.Tests.Services
 
             _syncEventService = new SyncEventService(
                 _syncEventRepositoryMock.Object,
+                _unitOfWorkMock.Object,
+                _messagePublisherMock.Object,
                 _mapper,
-                _unitOfWorkMock.Object
+                _queueMessageServiceMock.Object
             );
         }
+
 
         [Fact]
         public async Task Should_Get_SyncEvent_By_Id_Successfully()

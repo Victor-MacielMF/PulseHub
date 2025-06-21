@@ -21,11 +21,13 @@ namespace PulseHub.Application.Tests.Services
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly IMapper _mapper;
         private readonly IProductService _productService;
+        private readonly Mock<ISyncEventService> _syncEventServiceMock;
 
         public ProductServiceTests()
         {
             _productRepositoryMock = new Mock<IProductRepository>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _syncEventServiceMock = new Mock<ISyncEventService>();
 
             var mapperConfig = new MapperConfiguration(cfg =>
             {
@@ -37,7 +39,8 @@ namespace PulseHub.Application.Tests.Services
             _productService = new ProductService(
                 _productRepositoryMock.Object,
                 _mapper,
-                _unitOfWorkMock.Object
+                _unitOfWorkMock.Object,
+                _syncEventServiceMock.Object
             );
         }
 

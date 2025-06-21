@@ -129,7 +129,7 @@ namespace PulseHub.Application.Tests.Services
 
             // Assert
             await act.Should().ThrowAsync<Exception>()
-                     .WithMessage("Mensagem não encontrada.");
+                     .WithMessage("Queue message not found.");
 
             _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
         }

@@ -25,6 +25,7 @@ namespace PulseHub.Infrastructure.Tests.Messaging
 
             _settings = configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>()
                        ?? throw new InvalidOperationException("RabbitMQ settings not found in appsettings.json.");
+            _settings.QueueName += "-tests";
         }
 
         private IRabbitMQConnection CreateConnection()

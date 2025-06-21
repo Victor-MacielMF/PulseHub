@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PulseHub.Domain.Interfaces;
+using PulseHub.Domain.Messaging;
 using PulseHub.Infrastructure.Messaging.Interfaces;
 using PulseHub.Infrastructure.Messaging.Settings;
 using RabbitMQ.Client;
 using System;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PulseHub.Infrastructure.Messaging.Implementations
@@ -27,31 +27,39 @@ namespace PulseHub.Infrastructure.Messaging.Implementations
             _logger = logger;
         }
 
-        public Task PublishAsync(string message)
+        public Task PublishAsync(string message, string channel)
         {
             if (!_connection.IsConnected)
-            {
                 _connection.TryConnect();
-            }
 
-            using var channel = _connection.CreateChannel();
+            using var channelModel = _connection.CreateChannel();
+
+            var queueName = $"{_settings.QueueName}-{channel.ToLower()}";
+
+            channelModel.QueueDeclare(
+                queue: queueName,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+            );
 
             try
             {
                 var body = Encoding.UTF8.GetBytes(message);
 
-                channel.BasicPublish(
+                channelModel.BasicPublish(
                     exchange: "",
-                    routingKey: _settings.QueueName,
+                    routingKey: queueName,
                     basicProperties: null,
                     body: body
                 );
 
-                _logger.LogInformation("Message published to queue {QueueName}: {Message}", _settings.QueueName, message);
+                _logger.LogInformation("Message published to queue {QueueName}: {Message}", queueName, message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to publish message to queue {QueueName}", _settings.QueueName);
+                _logger.LogError(ex, "Failed to publish message to queue {QueueName}", queueName);
                 throw;
             }
 

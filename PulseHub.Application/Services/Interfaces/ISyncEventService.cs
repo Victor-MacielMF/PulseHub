@@ -10,5 +10,6 @@ namespace PulseHub.Application.Services.Interfaces
         Task<IEnumerable<SyncEventResponseDto>> GetAllAsync();
         Task<SyncEventResponseDto?> GetByIdAsync(Guid syncEventId);
         Task DeleteAsync(Guid syncEventId);
+        Task RegisterSyncEventAsync(string eventType, object data);
     }
 }
