@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using PulseHub.Application.DTOs;
 using PulseHub.Application.Services.Interfaces;
 using PulseHub.Domain.Entities;
+using PulseHub.Domain.Enums;
 using PulseHub.Domain.Interfaces;
 using PulseHub.Domain.Messaging;
 using System;
@@ -85,24 +86,23 @@ namespace PulseHub.Application.Services.Implementations
                     Payload = payload,
                     Channel = channel,
                     PublishedAt = DateTime.UtcNow,
-                    IsProcessed = false,
-                    RetryCount = 0,
-                    ErrorMessage = null,
-                    LastAttemptAt = null
+                    Status = QueueMessageStatus.Pending,
+                    RetryCount = 0
                 };
 
                 try
                 {
                     await _publisher.PublishAsync(payload, channel);
 
-                    queueMessage.IsProcessed = true;
+                    queueMessage.Status = QueueMessageStatus.Published;
+                    queueMessage.IsProcessed = false;
                     queueMessage.LastAttemptAt = DateTime.UtcNow;
                 }
                 catch (Exception ex)
                 {
-                    queueMessage.IsProcessed = false;
+                    queueMessage.Status = QueueMessageStatus.Failed;
                     queueMessage.ErrorMessage = ex.Message;
-                    queueMessage.RetryCount += 1;
+                    queueMessage.RetryCount = 1;
                     queueMessage.LastAttemptAt = DateTime.UtcNow;
                 }
 
@@ -111,6 +111,8 @@ namespace PulseHub.Application.Services.Implementations
 
             await _unitOfWork.SaveChangesAsync();
         }
+
+
 
         public async Task MarkAsProcessedAsync(Guid queueMessageId)
         {

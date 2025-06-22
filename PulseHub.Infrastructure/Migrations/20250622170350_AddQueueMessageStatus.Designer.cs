@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PulseHub.Infrastructure.Data;
 
 namespace Pulsehub.Infrastructure.Migrations
 {
     [DbContext(typeof(PulseHubDbContext))]
-    partial class PulseHubDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250622170350_AddQueueMessageStatus")]
+    partial class AddQueueMessageStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

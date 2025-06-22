@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PulseHub.Domain.Enums;
+using System;
 
 namespace PulseHub.Domain.Entities
 {
@@ -12,6 +13,7 @@ namespace PulseHub.Domain.Entities
         public DateTime PublishedAt { get; set; } = DateTime.UtcNow;
         public bool IsProcessed { get; set; } = false;
 
+        public QueueMessageStatus Status { get; set; } = QueueMessageStatus.Pending;
         public int RetryCount { get; set; } = 0;
         public string? ErrorMessage { get; set; }
         public DateTime? LastAttemptAt { get; set; }
