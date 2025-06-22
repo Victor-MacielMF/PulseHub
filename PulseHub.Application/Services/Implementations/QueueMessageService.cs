@@ -94,7 +94,7 @@ namespace PulseHub.Application.Services.Implementations
                 {
                     await _publisher.PublishAsync(payload, channel);
 
-                    queueMessage.Status = QueueMessageStatus.Published;
+                    queueMessage.Status = QueueMessageStatus.Enqueued;
                     queueMessage.IsProcessed = false;
                     queueMessage.LastAttemptAt = DateTime.UtcNow;
                 }

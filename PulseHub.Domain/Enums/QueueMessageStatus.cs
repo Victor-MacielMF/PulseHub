@@ -1,7 +1,7 @@
 ﻿public enum QueueMessageStatus
 {
     Pending,
-    Published,
+    Enqueued,
     Processed,
     Failed
 }
