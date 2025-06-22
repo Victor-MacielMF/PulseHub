@@ -37,7 +37,7 @@ pulsehub/
 ├── PulseHub.Infrastructure      → Acesso a dados, Migrations, Mensageria, UnitOfWork
 ├── PulseHub.Application.Tests   → Testes unitários
 ├── PulseHub.Infrastructure.Tests→ Testes de integração
-├── docs                         → Diagramas, documentação
+├── PulseHub.Consumer            → Serviço Worker (Consumer RabbitMQ)
 └── PulseHub.sln                 → Arquivo da solução
 ```
 

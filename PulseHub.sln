@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulseHub.Infrastructure.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulseHub.Application.Tests", "PulseHub.Application.Tests\PulseHub.Application.Tests.csproj", "{FB2F1636-7C19-468C-B0DF-AEBAB3E33BE6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulseHub.Consumer", "PulseHub.Consumer\PulseHub.Consumer.csproj", "{BEE10BC9-76FB-F85A-1663-F7DDFAFCDE22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{FB2F1636-7C19-468C-B0DF-AEBAB3E33BE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB2F1636-7C19-468C-B0DF-AEBAB3E33BE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB2F1636-7C19-468C-B0DF-AEBAB3E33BE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEE10BC9-76FB-F85A-1663-F7DDFAFCDE22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEE10BC9-76FB-F85A-1663-F7DDFAFCDE22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEE10BC9-76FB-F85A-1663-F7DDFAFCDE22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEE10BC9-76FB-F85A-1663-F7DDFAFCDE22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
