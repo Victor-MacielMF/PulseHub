@@ -18,104 +18,69 @@ namespace PulseHub.Infrastructure.Tests.Repositories
         public ProductRepositoryTests()
         {
             _context = TestDbContextFactory.CreateDbContext();
-
-            //SUT
-            _repository = new ProductRepository(_context); // Instancia ainda concreta, mas exposta como interface
+            _repository = new ProductRepository(_context);
         }
 
-
-        [Fact]
+        [Fact(DisplayName = "Should add and retrieve a product successfully")]
         public async Task Should_Add_And_Get_Product_Successfully()
         {
-            //Arrange
-            var product = new Product
-            {
-                ProductId = Guid.NewGuid(),
-                Name = "Test Product",
-                Description = "Test Description",
-                Price = 100,
-                Stock = 10,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                IsActive = true,
-            };
+            // Arrange
+            var product = CreateValidProduct();
 
-            //Act
+            // Act
             await _repository.AddAsync(product);
             await _context.SaveChangesAsync();
 
             var result = await _repository.GetByIdAsync(product.ProductId);
 
-            //Assert
+            // Assert
             result.Should().NotBeNull();
-            result!.Name.Should().Be("Test Product");
-            result.Description.Should().Be("Test Description");
+            result!.ProductId.Should().Be(product.ProductId);
+            result.Name.Should().Be(product.Name);
+            result.Description.Should().Be(product.Description);
+            result.Price.Should().Be(product.Price);
+            result.Stock.Should().Be(product.Stock);
+            result.IsActive.Should().BeTrue();
         }
 
-        [Fact]
-        public async Task Should_Get_All_Products()
+        [Fact(DisplayName = "Should retrieve all products successfully")]
+        public async Task Should_Get_All_Products_Successfully()
         {
             // Arrange
             var products = new List<Product>
             {
-                new Product
-                {
-                    ProductId = Guid.NewGuid(),
-                    Name = "Product 1",
-                    Description = "Description 1",
-                    Price = 50,
-                    Stock = 5,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new Product
-                {
-                    ProductId = Guid.NewGuid(),
-                    Name = "Product 2",
-                    Description = "Description 2",
-                    Price = 70,
-                    Stock = 7,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsActive = true
-                }
+                CreateValidProduct(),
+                CreateValidProduct()
             };
 
-            await _repository.AddAsync(products[0]);
-            await _repository.AddAsync(products[1]);
+            foreach (var product in products)
+            {
+                await _repository.AddAsync(product);
+            }
+
             await _context.SaveChangesAsync();
 
             // Act
-            var result = await _repository.GetAllAsync();
+            var result = await _repository.GetAllAsync(isActive: true);
 
             // Assert
             result.Should().NotBeNull();
             result.Should().HaveCount(2);
         }
 
-        [Fact]
+        [Fact(DisplayName = "Should update a product successfully")]
         public async Task Should_Update_Product_Successfully()
         {
             // Arrange
-            var product = new Product
-            {
-                ProductId = Guid.NewGuid(),
-                Name = "Product Before Update",
-                Description = "Description Before",
-                Price = 100,
-                Stock = 10,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                IsActive = true
-            };
+            var product = CreateValidProduct();
 
             await _repository.AddAsync(product);
             await _context.SaveChangesAsync();
 
             // Act
-            product.Name = "Product After Update";
-            product.Description = "Description After";
+            product.Name = "Updated Name";
+            product.Description = "Updated Description";
+
             _repository.Update(product);
             await _context.SaveChangesAsync();
 
@@ -123,25 +88,15 @@ namespace PulseHub.Infrastructure.Tests.Repositories
 
             // Assert
             result.Should().NotBeNull();
-            result!.Name.Should().Be("Product After Update");
-            result.Description.Should().Be("Description After");
+            result!.Name.Should().Be("Updated Name");
+            result.Description.Should().Be("Updated Description");
         }
 
-        [Fact]
-        public async Task Should_Delete_Product_Successfully()
+        [Fact(DisplayName = "Should soft delete a product successfully")]
+        public async Task Should_Soft_Delete_Product_Successfully()
         {
             // Arrange
-            var product = new Product
-            {
-                ProductId = Guid.NewGuid(),
-                Name = "Product to Delete",
-                Description = "Description",
-                Price = 100,
-                Stock = 10,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                IsActive = true
-            };
+            var product = CreateValidProduct();
 
             await _repository.AddAsync(product);
             await _context.SaveChangesAsync();
@@ -153,13 +108,27 @@ namespace PulseHub.Infrastructure.Tests.Repositories
             var result = await _repository.GetByIdAsync(product.ProductId);
 
             // Assert
-            result.Should().BeNull();
+            result.Should().NotBeNull();
+            result!.IsActive.Should().BeFalse();
         }
 
+        private Product CreateValidProduct()
+        {
+            return new Product
+            {
+                ProductId = Guid.NewGuid(),
+                Name = "Test Product",
+                Description = "Test Description",
+                Price = 100,
+                Stock = 10,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                IsActive = true
+            };
+        }
 
         public void Dispose()
         {
-            // Cleanup do banco após cada teste
             _context.Database.EnsureDeleted();
             _context.Dispose();
         }

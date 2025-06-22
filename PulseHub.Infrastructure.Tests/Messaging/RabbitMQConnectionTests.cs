@@ -12,9 +12,10 @@ using Xunit;
 
 namespace PulseHub.Infrastructure.Tests.Messaging
 {
-    public class RabbitMQConnectionTests
+    public class RabbitMQConnectionTests : IDisposable
     {
         private readonly RabbitMQSettings _settings;
+        private readonly IRabbitMQConnection _connection;
 
         public RabbitMQConnectionTests()
         {
@@ -24,44 +25,47 @@ namespace PulseHub.Infrastructure.Tests.Messaging
                 .Build();
 
             _settings = configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>()
-                       ?? throw new InvalidOperationException("RabbitMQ settings not found in appsettings.json.");
-            _settings.QueueName += "-tests";
-        }
+                        ?? throw new InvalidOperationException("RabbitMQ settings not found in appsettings.json.");
 
-        private IRabbitMQConnection CreateConnection()
-        {
-            var options = Options.Create(_settings);
+            _settings.QueueName += "-tests";
+
             var logger = LoggerFactory.Create(builder => builder.AddConsole())
                                       .CreateLogger<RabbitMQConnection>();
 
-            return new RabbitMQConnection(options, logger);
+            _connection = new RabbitMQConnection(Options.Create(_settings), logger);
         }
 
         [Fact(DisplayName = "Should connect to RabbitMQ successfully")]
         public void Should_Connect_To_RabbitMQ_Successfully()
         {
-            var connection = CreateConnection();
-            connection.IsConnected.Should().BeTrue();
+            _connection.IsConnected.Should().BeTrue();
         }
 
         [Fact(DisplayName = "Should create a channel successfully")]
         public void Should_Create_Channel_Successfully()
         {
-            var connection = CreateConnection();
-            using var channel = connection.CreateChannel();
+            using var channel = _connection.CreateChannel();
             channel.IsOpen.Should().BeTrue();
         }
 
-        [Fact(DisplayName = "The queue sync-events-queue should exist")]
-        public void Queue_Should_Exist()
+        [Fact(DisplayName = "The queue should exist or be declared successfully")]
+        public void Should_Declare_Or_Validate_Queue_Successfully()
         {
-            var connection = CreateConnection();
-            using var channel = connection.CreateChannel();
+            using var channel = _connection.CreateChannel();
+
+            Action act = () => channel.QueueDeclarePassive(_settings.QueueName);
+
+            act.Should().NotThrow("the queue should exist in RabbitMQ");
 
             var result = channel.QueueDeclarePassive(_settings.QueueName);
 
             result.QueueName.Should().Be(_settings.QueueName);
             result.MessageCount.Should().BeGreaterOrEqualTo(0);
+        }
+
+        public void Dispose()
+        {
+            _connection.Dispose();
         }
     }
 }

@@ -21,20 +21,13 @@ namespace PulseHub.Infrastructure.Tests.Repositories
             _repository = new QueueMessageRepository(_context);
         }
 
-        [Fact]
+        [Fact(DisplayName = "Should add and retrieve a queue message successfully")]
         public async Task Should_Add_And_Get_QueueMessage_Successfully()
         {
             // Arrange
-            var syncEvent = CreateFakeSyncEvent();
+            var syncEvent = CreateValidSyncEvent();
 
-            var message = new QueueMessage
-            {
-                QueueMessageId = Guid.NewGuid(),
-                SyncEventId = syncEvent.SyncEventId,
-                Payload = "{\"teste\":\"data\"}",
-                PublishedAt = DateTime.UtcNow,
-                IsProcessed = false
-            };
+            var message = CreateValidQueueMessage(syncEvent.SyncEventId);
 
             await _context.SyncEvents.AddAsync(syncEvent);
             await _repository.AddAsync(message);
@@ -45,39 +38,28 @@ namespace PulseHub.Infrastructure.Tests.Repositories
 
             // Assert
             result.Should().NotBeNull();
-            result!.Payload.Should().Be("{\"teste\":\"data\"}");
+            result!.QueueMessageId.Should().Be(message.QueueMessageId);
+            result.Payload.Should().Be(message.Payload);
             result.IsProcessed.Should().BeFalse();
         }
 
-        [Fact]
-        public async Task Should_Get_All_QueueMessages()
+        [Fact(DisplayName = "Should retrieve all queue messages")]
+        public async Task Should_Get_All_QueueMessages_Successfully()
         {
             // Arrange
-            var syncEvent = CreateFakeSyncEvent();
+            var syncEvent = CreateValidSyncEvent();
 
             var messages = new List<QueueMessage>
             {
-                new QueueMessage
-                {
-                    QueueMessageId = Guid.NewGuid(),
-                    SyncEventId = syncEvent.SyncEventId,
-                    Payload = "{\"msg\":\"1\"}",
-                    PublishedAt = DateTime.UtcNow,
-                    IsProcessed = false
-                },
-                new QueueMessage
-                {
-                    QueueMessageId = Guid.NewGuid(),
-                    SyncEventId = syncEvent.SyncEventId,
-                    Payload = "{\"msg\":\"2\"}",
-                    PublishedAt = DateTime.UtcNow,
-                    IsProcessed = true
-                }
+                CreateValidQueueMessage(syncEvent.SyncEventId, "{\"msg\":\"1\"}"),
+                CreateValidQueueMessage(syncEvent.SyncEventId, "{\"msg\":\"2\"}", true)
             };
 
             await _context.SyncEvents.AddAsync(syncEvent);
-            await _repository.AddAsync(messages[0]);
-            await _repository.AddAsync(messages[1]);
+            foreach (var message in messages)
+            {
+                await _repository.AddAsync(message);
+            }
             await _context.SaveChangesAsync();
 
             // Act
@@ -88,20 +70,13 @@ namespace PulseHub.Infrastructure.Tests.Repositories
             result.Should().HaveCount(2);
         }
 
-        [Fact]
+        [Fact(DisplayName = "Should update a queue message successfully")]
         public async Task Should_Update_QueueMessage_Successfully()
         {
             // Arrange
-            var syncEvent = CreateFakeSyncEvent();
+            var syncEvent = CreateValidSyncEvent();
 
-            var message = new QueueMessage
-            {
-                QueueMessageId = Guid.NewGuid(),
-                SyncEventId = syncEvent.SyncEventId,
-                Payload = "{\"status\":\"pending\"}",
-                PublishedAt = DateTime.UtcNow,
-                IsProcessed = false
-            };
+            var message = CreateValidQueueMessage(syncEvent.SyncEventId, "{\"status\":\"pending\"}");
 
             await _context.SyncEvents.AddAsync(syncEvent);
             await _repository.AddAsync(message);
@@ -121,20 +96,13 @@ namespace PulseHub.Infrastructure.Tests.Repositories
             result.IsProcessed.Should().BeTrue();
         }
 
-        [Fact]
+        [Fact(DisplayName = "Should delete a queue message successfully")]
         public async Task Should_Delete_QueueMessage_Successfully()
         {
             // Arrange
-            var syncEvent = CreateFakeSyncEvent();
+            var syncEvent = CreateValidSyncEvent();
 
-            var message = new QueueMessage
-            {
-                QueueMessageId = Guid.NewGuid(),
-                SyncEventId = syncEvent.SyncEventId,
-                Payload = "{\"msg\":\"to delete\"}",
-                PublishedAt = DateTime.UtcNow,
-                IsProcessed = false
-            };
+            var message = CreateValidQueueMessage(syncEvent.SyncEventId, "{\"msg\":\"to delete\"}");
 
             await _context.SyncEvents.AddAsync(syncEvent);
             await _repository.AddAsync(message);
@@ -150,7 +118,20 @@ namespace PulseHub.Infrastructure.Tests.Repositories
             result.Should().BeNull();
         }
 
-        private SyncEvent CreateFakeSyncEvent()
+        private QueueMessage CreateValidQueueMessage(Guid syncEventId, string? payload = null, bool isProcessed = false)
+        {
+            return new QueueMessage
+            {
+                QueueMessageId = Guid.NewGuid(),
+                SyncEventId = syncEventId,
+                Channel = "MercadoLivre",
+                Payload = payload ?? "{\"example\":\"data\"}",
+                PublishedAt = DateTime.UtcNow,
+                IsProcessed = isProcessed
+            };
+        }
+
+        private SyncEvent CreateValidSyncEvent()
         {
             var product = new Product
             {

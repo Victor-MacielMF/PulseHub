@@ -21,21 +21,12 @@ namespace PulseHub.Infrastructure.Tests.Repositories
             _repository = new SyncEventRepository(_context);
         }
 
-        [Fact]
+        [Fact(DisplayName = "Should add and retrieve a sync event successfully")]
         public async Task Should_Add_And_Get_SyncEvent_Successfully()
         {
             // Arrange
-            var product = CreateFakeProduct();
-
-            var syncEvent = new SyncEvent
-            {
-                SyncEventId = Guid.NewGuid(),
-                ProductId = product.ProductId,
-                EventType = "StockUpdate",
-                EventDate = DateTime.UtcNow,
-                Status = "Pending",
-                Message = "Test sync event"
-            };
+            var product = CreateValidProduct();
+            var syncEvent = CreateValidSyncEvent(product.ProductId);
 
             await _context.Products.AddAsync(product);
             await _repository.AddAsync(syncEvent);
@@ -46,42 +37,28 @@ namespace PulseHub.Infrastructure.Tests.Repositories
 
             // Assert
             result.Should().NotBeNull();
-            result!.EventType.Should().Be("StockUpdate");
-            result.Status.Should().Be("Pending");
-            result.Message.Should().Be("Test sync event");
+            result!.EventType.Should().Be(syncEvent.EventType);
+            result.Status.Should().Be(syncEvent.Status);
+            result.Message.Should().Be(syncEvent.Message);
         }
 
-        [Fact]
-        public async Task Should_Get_All_SyncEvents()
+        [Fact(DisplayName = "Should retrieve all sync events")]
+        public async Task Should_Get_All_SyncEvents_Successfully()
         {
             // Arrange
-            var product = CreateFakeProduct();
+            var product = CreateValidProduct();
 
             var events = new List<SyncEvent>
             {
-                new SyncEvent
-                {
-                    SyncEventId = Guid.NewGuid(),
-                    ProductId = product.ProductId,
-                    EventType = "Event1",
-                    EventDate = DateTime.UtcNow,
-                    Status = "Pending",
-                    Message = "Message 1"
-                },
-                new SyncEvent
-                {
-                    SyncEventId = Guid.NewGuid(),
-                    ProductId = product.ProductId,
-                    EventType = "Event2",
-                    EventDate = DateTime.UtcNow,
-                    Status = "Completed",
-                    Message = "Message 2"
-                }
+                CreateValidSyncEvent(product.ProductId, "Event1", "Message1", "Pending"),
+                CreateValidSyncEvent(product.ProductId, "Event2", "Message2", "Completed")
             };
 
             await _context.Products.AddAsync(product);
-            await _repository.AddAsync(events[0]);
-            await _repository.AddAsync(events[1]);
+            foreach (var ev in events)
+            {
+                await _repository.AddAsync(ev);
+            }
             await _context.SaveChangesAsync();
 
             // Act
@@ -92,28 +69,19 @@ namespace PulseHub.Infrastructure.Tests.Repositories
             result.Should().HaveCount(2);
         }
 
-        [Fact]
+        [Fact(DisplayName = "Should update a sync event successfully")]
         public async Task Should_Update_SyncEvent_Successfully()
         {
             // Arrange
-            var product = CreateFakeProduct();
-
-            var syncEvent = new SyncEvent
-            {
-                SyncEventId = Guid.NewGuid(),
-                ProductId = product.ProductId,
-                EventType = "EventBeforeUpdate",
-                EventDate = DateTime.UtcNow,
-                Status = "Pending",
-                Message = "Before update"
-            };
+            var product = CreateValidProduct();
+            var syncEvent = CreateValidSyncEvent(product.ProductId, "EventBefore", "Before update", "Pending");
 
             await _context.Products.AddAsync(product);
             await _repository.AddAsync(syncEvent);
             await _context.SaveChangesAsync();
 
             // Act
-            syncEvent.EventType = "EventAfterUpdate";
+            syncEvent.EventType = "EventAfter";
             syncEvent.Status = "Completed";
             syncEvent.Message = "After update";
 
@@ -124,26 +92,17 @@ namespace PulseHub.Infrastructure.Tests.Repositories
 
             // Assert
             result.Should().NotBeNull();
-            result!.EventType.Should().Be("EventAfterUpdate");
+            result!.EventType.Should().Be("EventAfter");
             result.Status.Should().Be("Completed");
             result.Message.Should().Be("After update");
         }
 
-        [Fact]
+        [Fact(DisplayName = "Should delete a sync event successfully")]
         public async Task Should_Delete_SyncEvent_Successfully()
         {
             // Arrange
-            var product = CreateFakeProduct();
-
-            var syncEvent = new SyncEvent
-            {
-                SyncEventId = Guid.NewGuid(),
-                ProductId = product.ProductId,
-                EventType = "EventToDelete",
-                EventDate = DateTime.UtcNow,
-                Status = "Pending",
-                Message = "Delete me"
-            };
+            var product = CreateValidProduct();
+            var syncEvent = CreateValidSyncEvent(product.ProductId, "EventToDelete", "Delete me", "Pending");
 
             await _context.Products.AddAsync(product);
             await _repository.AddAsync(syncEvent);
@@ -159,12 +118,27 @@ namespace PulseHub.Infrastructure.Tests.Repositories
             result.Should().BeNull();
         }
 
-        private Product CreateFakeProduct()
+        // 🔧 Helpers
+
+        private SyncEvent CreateValidSyncEvent(Guid productId, string eventType = "StockUpdate", string message = "Test sync event", string status = "Pending")
         {
-            var product = new Product
+            return new SyncEvent
+            {
+                SyncEventId = Guid.NewGuid(),
+                ProductId = productId,
+                EventType = eventType,
+                EventDate = DateTime.UtcNow,
+                Status = status,
+                Message = message
+            };
+        }
+
+        private Product CreateValidProduct()
+        {
+            return new Product
             {
                 ProductId = Guid.NewGuid(),
-                Name = "Product for SyncEvent",
+                Name = "Test Product",
                 Description = "Test Description",
                 Price = 100,
                 Stock = 10,
@@ -172,8 +146,6 @@ namespace PulseHub.Infrastructure.Tests.Repositories
                 UpdatedAt = DateTime.UtcNow,
                 IsActive = true
             };
-
-            return product;
         }
 
         public void Dispose()

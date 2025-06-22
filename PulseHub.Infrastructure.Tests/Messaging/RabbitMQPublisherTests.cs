@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using PulseHub.Domain.Interfaces;
 using PulseHub.Infrastructure.Messaging.Implementations;
 using PulseHub.Infrastructure.Messaging.Interfaces;
 using PulseHub.Infrastructure.Messaging.Settings;
@@ -14,9 +13,11 @@ using Xunit;
 
 namespace PulseHub.Infrastructure.Tests.Messaging
 {
-    public class RabbitMQPublisherTests
+    public class RabbitMQPublisherTests : IDisposable
     {
         private readonly RabbitMQSettings _settings;
+        private readonly IRabbitMQConnection _connection;
+        private readonly RabbitMQPublisher _publisher;
 
         public RabbitMQPublisherTests()
         {
@@ -26,43 +27,46 @@ namespace PulseHub.Infrastructure.Tests.Messaging
                 .Build();
 
             _settings = configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>()
-                       ?? throw new InvalidOperationException("RabbitMQ settings not found in appsettings.json.");
-        }
+                        ?? throw new InvalidOperationException("RabbitMQ settings not found.");
 
-        private IMessagePublisher CreatePublisher()
-        {
-            var connection = new RabbitMQConnection(
-                Options.Create(_settings),
-                LoggerFactory.Create(builder => builder.AddConsole())
-                             .CreateLogger<RabbitMQConnection>());
+            _settings.QueueName += "-tests";
 
-            var publisher = new RabbitMQPublisher(
-                connection,
-                Options.Create(_settings),
-                LoggerFactory.Create(builder => builder.AddConsole())
-                             .CreateLogger<RabbitMQPublisher>());
+            var loggerConnection = LoggerFactory.Create(builder => builder.AddConsole())
+                                                 .CreateLogger<RabbitMQConnection>();
 
-            return publisher;
+            _connection = new RabbitMQConnection(Options.Create(_settings), loggerConnection);
+
+            var loggerPublisher = LoggerFactory.Create(builder => builder.AddConsole())
+                                                .CreateLogger<RabbitMQPublisher>();
+
+            _publisher = new RabbitMQPublisher(_connection, Options.Create(_settings), loggerPublisher);
         }
 
         [Fact(DisplayName = "Should publish a message successfully")]
         public async Task Should_Publish_Message_Successfully()
         {
-            var publisher = CreatePublisher();
-
+            // Arrange
             var message = new
             {
                 EventId = Guid.NewGuid(),
                 EventType = "TestMessage",
                 Timestamp = DateTime.UtcNow,
-                Data = new { ProductId = 1, Name = "Test" }
+                Data = new { ProductId = 1, Name = "TestProduct" }
             };
 
             var json = JsonSerializer.Serialize(message);
+            var testChannel = "tests";
 
-            Func<Task> act = async () => await publisher.PublishAsync(json, "tests");
+            // Act
+            Func<Task> act = async () => await _publisher.PublishAsync(json, testChannel);
 
+            // Assert
             await act.Should().NotThrowAsync();
+        }
+
+        public void Dispose()
+        {
+            _connection.Dispose();
         }
     }
 }
