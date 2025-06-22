@@ -29,8 +29,6 @@ namespace PulseHub.Infrastructure.Tests.Messaging
             _settings = configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>()
                         ?? throw new InvalidOperationException("RabbitMQ settings not found.");
 
-            _settings.QueueName += "-tests";
-
             var loggerConnection = LoggerFactory.Create(builder => builder.AddConsole())
                                                  .CreateLogger<RabbitMQConnection>();
 
