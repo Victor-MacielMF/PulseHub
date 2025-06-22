@@ -4,14 +4,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PulseHub.API.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Pulsehub.Infrastructure.Extensions;
 using PulseHub.API.Middlewares;
 using PulseHub.Application.DTOs;
 using PulseHub.Application.Mappings.Profiles;
-using PulseHub.Infrastructure.Messaging.Implementations;
-using PulseHub.Infrastructure.Messaging.Interfaces;
+using PulseHub.Application.Services.Implementations;
+using PulseHub.Application.Services.Interfaces;
+using PulseHub.Infrastructure.Extensions;
 using PulseHub.Infrastructure.Messaging.Settings;
 using System.Linq;
 using System.Reflection;
@@ -27,12 +28,18 @@ namespace PulseHub.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Dependências da Infrastructure
             services.AddInfrastructure(Configuration);
 
+            // Dependências da Application (Application Services)
+            services.AddApplicationServices();
+
+            // Controllers
             services.AddControllers();
+
+            // Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -46,17 +53,17 @@ namespace PulseHub.API
                         Email = "joaovictormacieldefreitas@gmail.com"
                     }
                 });
+
+                c.EnableAnnotations();
             });
 
             // AutoMapper
             services.AddAutoMapper(
-                Assembly.GetExecutingAssembly(),              // Procura na camada API
-                typeof(ProductProfile).Assembly               // Procura na camada Application
+                Assembly.GetExecutingAssembly(),   // API
+                typeof(ProductProfile).Assembly    // Application
             );
 
-            // Configura a resposta padrão para erros de validação do ModelState.
-            // Isso substitui a resposta padrão do ASP.NET (400 Bad Request) por um formato consistente usando ApiResponse.
-            // Captura erros como campos obrigatórios ausentes, tipos inválidos, etc.
+            // Tratamento global de erros de ModelState (Validações)
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.InvalidModelStateResponseFactory = context =>
@@ -79,16 +86,11 @@ namespace PulseHub.API
                 };
             });
 
-            services.AddSwaggerGen(c =>
-            {
-                c.EnableAnnotations();
-            });
-
+            // Configuração do RabbitMQ Settings
             services.Configure<RabbitMQSettings>(
                 Configuration.GetSection("RabbitMQ"));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -100,6 +102,7 @@ namespace PulseHub.API
 
             app.UseHttpsRedirection();
 
+            // Middleware global para tratamento de exceções
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseRouting();

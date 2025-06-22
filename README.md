@@ -136,7 +136,7 @@ dotnet test
 
 ## 🗃️ Modelagem das Entidades
 
-![Modelagem das Entidades](./docs/entities-model-v2.png)
+![Modelagem das Entidades](./docs/entities-model-v3.png)
 
 ---
 
