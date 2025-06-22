@@ -25,7 +25,6 @@ namespace PulseHub.Application.Tests.Services
         private readonly IMapper _mapper;
         private readonly ISyncEventService _syncEventService;
 
-
         public SyncEventServiceTests()
         {
             _syncEventRepositoryMock = new Mock<ISyncEventRepository>();
@@ -48,7 +47,6 @@ namespace PulseHub.Application.Tests.Services
                 _queueMessageServiceMock.Object
             );
         }
-
 
         [Fact]
         public async Task Should_Get_SyncEvent_By_Id_Successfully()
@@ -137,7 +135,7 @@ namespace PulseHub.Application.Tests.Services
 
             // Assert
             await act.Should().ThrowAsync<Exception>()
-                     .WithMessage("Evento de sincronização não encontrado.");
+                     .WithMessage("Sync event not found.");
 
             _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
         }

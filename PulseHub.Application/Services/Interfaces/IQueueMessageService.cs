@@ -12,12 +12,12 @@ namespace PulseHub.Application.Services.Interfaces
         Task DeleteAsync(Guid queueMessageId);
 
         /// <summary>
-        /// Publica um evento nas filas e registra uma QueueMessage para cada canal.
+        /// Publishes a sync event to the queues and registers a QueueMessage for each channel.
         /// </summary>
         Task DispatchEventAsync(Guid syncEventId);
 
         /// <summary>
-        /// Atualiza o status da mensagem para processada.
+        /// Updates the message status to processed.
         /// </summary>
         Task MarkAsProcessedAsync(Guid queueMessageId);
     }

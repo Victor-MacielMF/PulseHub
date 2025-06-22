@@ -6,12 +6,12 @@ namespace PulseHub.Application.Mappings.Extensions
 {
     public static class ProductMappingExtensions
     {
-        // 🔄 DTO (Request) → Entidade (Product)
+        // Maps ProductRequestDto to Product entity
         public static Product ToEntity(this ProductRequestDto dto)
         {
             return new Product
             {
-                ProductId = Guid.NewGuid(), // Gerado no mapeamento
+                ProductId = Guid.NewGuid(), // Generated during mapping
                 Name = dto.Name,
                 Description = dto.Description,
                 Price = dto.Price,
@@ -22,7 +22,7 @@ namespace PulseHub.Application.Mappings.Extensions
             };
         }
 
-        // 🔄 Entidade (Product) → DTO (Response)
+        // Maps Product entity to ProductResponseDto
         public static ProductResponseDto ToResponse(this Product entity)
         {
             return new ProductResponseDto
@@ -38,6 +38,7 @@ namespace PulseHub.Application.Mappings.Extensions
             };
         }
 
+        // Updates an existing Product entity with data from ProductRequestDto
         public static void UpdateEntity(this ProductRequestDto dto, Product entity)
         {
             entity.Name = dto.Name;

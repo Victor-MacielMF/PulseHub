@@ -8,10 +8,10 @@ namespace PulseHub.Application.Mappings.Profiles
     {
         public ProductProfile()
         {
-            // Mapeia de Product para ProductResponseDto
+            // Maps Product entity to ProductResponseDto
             CreateMap<Product, ProductResponseDto>();
 
-            // Mapeia de ProductResponseDto para Product (se precisar)
+            // Maps ProductResponseDto to Product entity (if needed)
             CreateMap<ProductResponseDto, Product>();
         }
     }

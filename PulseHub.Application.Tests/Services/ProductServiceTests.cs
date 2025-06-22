@@ -155,7 +155,7 @@ namespace PulseHub.Application.Tests.Services
 
             // Assert
             await act.Should().ThrowAsync<Exception>()
-                     .WithMessage("Produto não encontrado.");
+                     .WithMessage("Product not found.");
 
             _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
         }
@@ -174,7 +174,7 @@ namespace PulseHub.Application.Tests.Services
             await _productService.DeleteAsync(productId);
 
             // Assert
-            _productRepositoryMock.Verify(r => r.Delete(existingProduct), Times.Once);
+            _productRepositoryMock.Verify(r => r.Update(existingProduct), Times.Once);
             _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
         }
 
@@ -189,10 +189,9 @@ namespace PulseHub.Application.Tests.Services
             // Act
             Func<Task> act = async () => await _productService.DeleteAsync(productId);
 
-
             // Assert
             await act.Should().ThrowAsync<Exception>()
-                     .WithMessage("Produto não encontrado.");
+                     .WithMessage("Product not found.");
 
             _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
         }

@@ -37,14 +37,14 @@ namespace PulseHub.Infrastructure.Tests.Messaging
             return new RabbitMQConnection(options, logger);
         }
 
-        [Fact(DisplayName = "Deve conectar ao RabbitMQ com sucesso")]
+        [Fact(DisplayName = "Should connect to RabbitMQ successfully")]
         public void Should_Connect_To_RabbitMQ_Successfully()
         {
             var connection = CreateConnection();
             connection.IsConnected.Should().BeTrue();
         }
 
-        [Fact(DisplayName = "Deve criar um canal com sucesso")]
+        [Fact(DisplayName = "Should create a channel successfully")]
         public void Should_Create_Channel_Successfully()
         {
             var connection = CreateConnection();
@@ -52,7 +52,7 @@ namespace PulseHub.Infrastructure.Tests.Messaging
             channel.IsOpen.Should().BeTrue();
         }
 
-        [Fact(DisplayName = "A fila sync-events-queue deve existir")]
+        [Fact(DisplayName = "The queue sync-events-queue should exist")]
         public void Queue_Should_Exist()
         {
             var connection = CreateConnection();

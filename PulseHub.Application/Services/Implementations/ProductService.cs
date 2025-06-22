@@ -58,7 +58,7 @@ namespace PulseHub.Application.Services.Implementations
         public async Task<ProductResponseDto> UpdateAsync(Guid productId, ProductRequestDto productDto)
         {
             var product = await _productRepository.GetByIdAsync(productId)
-                          ?? throw new Exception("Produto não encontrado.");
+                          ?? throw new Exception("Product not found.");
 
             productDto.UpdateEntity(product);
 
@@ -76,7 +76,7 @@ namespace PulseHub.Application.Services.Implementations
         public async Task DeleteAsync(Guid productId)
         {
             var product = await _productRepository.GetByIdAsync(productId)
-                          ?? throw new Exception("Produto não encontrado.");
+                          ?? throw new Exception("Product not found.");
 
             product.IsActive = false;
 

@@ -26,24 +26,26 @@ namespace PulseHub.Infrastructure.Tests.Messaging
                 .Build();
 
             _settings = configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>()
-                       ?? throw new InvalidOperationException("RabbitMQ not found in appsettings.json.");
+                       ?? throw new InvalidOperationException("RabbitMQ settings not found in appsettings.json.");
         }
 
         private IMessagePublisher CreatePublisher()
         {
             var connection = new RabbitMQConnection(
                 Options.Create(_settings),
-                LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<RabbitMQConnection>());
+                LoggerFactory.Create(builder => builder.AddConsole())
+                             .CreateLogger<RabbitMQConnection>());
 
             var publisher = new RabbitMQPublisher(
                 connection,
                 Options.Create(_settings),
-                LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<RabbitMQPublisher>());
+                LoggerFactory.Create(builder => builder.AddConsole())
+                             .CreateLogger<RabbitMQPublisher>());
 
             return publisher;
         }
 
-        [Fact(DisplayName = "Should publish message successfully")]
+        [Fact(DisplayName = "Should publish a message successfully")]
         public async Task Should_Publish_Message_Successfully()
         {
             var publisher = CreatePublisher();

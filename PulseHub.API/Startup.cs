@@ -10,8 +10,6 @@ using Microsoft.OpenApi.Models;
 using PulseHub.API.Middlewares;
 using PulseHub.Application.DTOs;
 using PulseHub.Application.Mappings.Profiles;
-using PulseHub.Application.Services.Implementations;
-using PulseHub.Application.Services.Interfaces;
 using PulseHub.Infrastructure.Extensions;
 using PulseHub.Infrastructure.Messaging.Settings;
 using System.Linq;
@@ -30,23 +28,23 @@ namespace PulseHub.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Dependências da Infrastructure
+            // Infrastructure dependencies
             services.AddInfrastructure(Configuration);
 
-            // Dependências da Application (Application Services)
+            // Application services dependencies
             services.AddApplicationServices();
 
             // Controllers
             services.AddControllers();
 
-            // Swagger
+            // Swagger configuration
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "PulseHub API",
                     Version = "v1",
-                    Description = "API para gerenciamento de produtos e sincronização com marketplaces.",
+                    Description = "API for product management and marketplace synchronization.",
                     Contact = new OpenApiContact
                     {
                         Name = "João Victor Maciel de Freitas",
@@ -57,13 +55,13 @@ namespace PulseHub.API
                 c.EnableAnnotations();
             });
 
-            // AutoMapper
+            // AutoMapper configuration
             services.AddAutoMapper(
                 Assembly.GetExecutingAssembly(),   // API
                 typeof(ProductProfile).Assembly    // Application
             );
 
-            // Tratamento global de erros de ModelState (Validações)
+            // Global ModelState validation handling
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.InvalidModelStateResponseFactory = context =>
@@ -86,7 +84,7 @@ namespace PulseHub.API
                 };
             });
 
-            // Configuração do RabbitMQ Settings
+            // RabbitMQ settings binding
             services.Configure<RabbitMQSettings>(
                 Configuration.GetSection("RabbitMQ"));
         }
@@ -102,7 +100,7 @@ namespace PulseHub.API
 
             app.UseHttpsRedirection();
 
-            // Middleware global para tratamento de exceções
+            // Global exception handling middleware
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseRouting();

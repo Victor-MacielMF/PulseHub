@@ -2,16 +2,16 @@
 using Microsoft.Extensions.Options;
 using PulseHub.Infrastructure.Messaging.Interfaces;
 using PulseHub.Infrastructure.Messaging.Settings;
-using System;
 using RabbitMQ.Client;
+using System;
 
 namespace PulseHub.Infrastructure.Messaging.Implementations
 {
     public class RabbitMQConnection : IRabbitMQConnection, IDisposable
     {
-        private readonly RabbitMQ.Client.IConnectionFactory _connectionFactory;
+        private readonly IConnectionFactory _connectionFactory;
         private readonly ILogger<RabbitMQConnection> _logger;
-        private RabbitMQ.Client.IConnection _connection;
+        private IConnection _connection;
         private bool _disposed;
 
         public RabbitMQConnection(IOptions<RabbitMQSettings> options, ILogger<RabbitMQConnection> logger)
@@ -31,24 +31,24 @@ namespace PulseHub.Infrastructure.Messaging.Implementations
 
         public bool IsConnected => _connection != null && _connection.IsOpen && !_disposed;
 
-        public RabbitMQ.Client.IModel CreateChannel()
+        public IModel CreateChannel()
         {
             if (!IsConnected)
-                throw new InvalidOperationException("Não há conexão ativa com o RabbitMQ.");
+                throw new InvalidOperationException("No active RabbitMQ connection.");
 
             return _connection.CreateModel();
         }
 
         public void TryConnect()
         {
-            _logger.LogInformation("Tentando conectar ao RabbitMQ...");
+            _logger.LogInformation("Attempting to connect to RabbitMQ...");
 
             _connection = _connectionFactory.CreateConnection();
 
             if (IsConnected)
-                _logger.LogInformation("Conectado ao RabbitMQ com sucesso.");
+                _logger.LogInformation("Successfully connected to RabbitMQ.");
             else
-                _logger.LogError("Falha ao conectar no RabbitMQ.");
+                _logger.LogError("Failed to connect to RabbitMQ.");
         }
 
         public void Dispose()
@@ -62,7 +62,7 @@ namespace PulseHub.Infrastructure.Messaging.Implementations
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao fechar a conexão RabbitMQ.");
+                _logger.LogError(ex, "Error while closing RabbitMQ connection.");
             }
         }
     }
