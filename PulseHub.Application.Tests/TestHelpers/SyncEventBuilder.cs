@@ -1,4 +1,5 @@
 ﻿using PulseHub.Domain.Entities;
+using PulseHub.Domain.Enums;
 using System;
 
 namespace PulseHub.Application.Tests.TestHelpers
@@ -11,10 +12,11 @@ namespace PulseHub.Application.Tests.TestHelpers
             {
                 SyncEventId = id ?? Guid.NewGuid(),
                 ProductId = productId ?? Guid.NewGuid(),
-                EventType = "StockUpdate",
-                Status = "Success",
-                Message = "Stock updated successfully.",
-                EventDate = DateTime.UtcNow
+                EventType = "ProductCreated",
+                Status = SyncEventStatus.Pending,
+                Message = "Event registered successfully.",
+                EventDate = DateTime.UtcNow,
+                Payload = "{\"productId\":\"" + (productId ?? Guid.NewGuid()) + "\"}"
             };
         }
     }
