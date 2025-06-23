@@ -4,6 +4,7 @@ using PulseHub.Domain.Interfaces;
 using PulseHub.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PulseHub.Infrastructure.Repositories
@@ -29,6 +30,14 @@ namespace PulseHub.Infrastructure.Repositories
             return await _context.QueueMessages
                 .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.QueueMessageId == id);
+        }
+
+        public async Task<IEnumerable<QueueMessage>> GetBySyncEventIdAsync(Guid syncEventId)
+        {
+            return await _context.QueueMessages
+                .AsNoTracking()
+                .Where(q => q.SyncEventId == syncEventId)
+                .ToListAsync();
         }
 
         public async Task AddAsync(QueueMessage queueMessage)

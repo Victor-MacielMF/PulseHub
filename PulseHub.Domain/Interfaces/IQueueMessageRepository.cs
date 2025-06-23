@@ -9,6 +9,7 @@ namespace PulseHub.Domain.Interfaces
     {
         Task<QueueMessage?> GetByIdAsync(Guid id);
         Task<IEnumerable<QueueMessage>> GetAllAsync();
+        Task<IEnumerable<QueueMessage>> GetBySyncEventIdAsync(Guid syncEventId);
         Task AddAsync(QueueMessage queueMessage);
         void Update(QueueMessage queueMessage);
         void Delete(QueueMessage queueMessage);

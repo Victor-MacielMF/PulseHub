@@ -69,19 +69,22 @@ namespace PulseHub.Application.Services.Implementations
             if (string.IsNullOrWhiteSpace(syncEvent.Payload))
                 throw new Exception("Sync event does not contain payload.");
 
-            var payload = JsonSerializer.Serialize(new IntegrationMessage<object>
-            {
-                EventId = syncEvent.SyncEventId,
-                EventType = syncEvent.EventType,
-                Timestamp = DateTime.UtcNow,
-                Data = JsonSerializer.Deserialize<object>(syncEvent.Payload)
-            });
-
             foreach (var channel in _channels)
             {
+                var queueMessageId = Guid.NewGuid(); // 🔥 Gera aqui
+
+                var payload = JsonSerializer.Serialize(new IntegrationMessage<object>
+                {
+                    EventId = syncEvent.SyncEventId,
+                    QueueMessageId = queueMessageId, // ✅ Agora funciona
+                    EventType = syncEvent.EventType,
+                    Timestamp = DateTime.UtcNow,
+                    Data = JsonSerializer.Deserialize<object>(syncEvent.Payload)
+                });
+
                 var queueMessage = new QueueMessage
                 {
-                    QueueMessageId = Guid.NewGuid(),
+                    QueueMessageId = queueMessageId,
                     SyncEventId = syncEvent.SyncEventId,
                     Payload = payload,
                     Channel = channel,
@@ -111,6 +114,7 @@ namespace PulseHub.Application.Services.Implementations
 
             await _unitOfWork.SaveChangesAsync();
         }
+
 
 
 

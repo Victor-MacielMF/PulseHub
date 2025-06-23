@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using PulseHub.Domain.Enums;
 
 namespace PulseHub.Domain.Entities
 {
@@ -13,7 +14,7 @@ namespace PulseHub.Domain.Entities
 
         public DateTime EventDate { get; set; } = DateTime.UtcNow;
 
-        public string Status { get; set; } = string.Empty; // Pending, Processing, Completed, Failed
+        public string Status { get; set; } = SyncEventStatus.Pending;
 
         public string Message { get; set; } = string.Empty;
 
@@ -23,5 +24,23 @@ namespace PulseHub.Domain.Entities
         public ICollection<QueueMessage> QueueMessages { get; set; } = new List<QueueMessage>();
 
         public Product Product { get; set; } = null!;
+
+        // 🔥 Métodos de domínio
+        public void SetAsProcessing()
+        {
+            Status = SyncEventStatus.Processing;
+        }
+
+        public void SetAsCompleted()
+        {
+            Status = SyncEventStatus.Completed;
+            Message = string.Empty;
+        }
+
+        public void SetAsFailed(string error)
+        {
+            Status = SyncEventStatus.Failed;
+            Message = error;
+        }
     }
 }

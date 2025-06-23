@@ -1,10 +1,9 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using PulseHub.Consumer.Settings;
+using PulseHub.Infrastructure.Messaging.Settings;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;

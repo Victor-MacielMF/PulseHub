@@ -1,4 +1,6 @@
-﻿namespace PulseHub.Consumer.Settings
+﻿using PulseHub.Domain.Messaging;
+
+namespace PulseHub.Consumer.Settings
 {
     public class RabbitMQSettings
     {
