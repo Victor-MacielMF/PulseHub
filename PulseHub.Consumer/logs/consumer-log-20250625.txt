@@ -1,0 +1,118 @@
+2025-06-25 15:49:26.356 -03:00 [INF] Starting PulseHub.Consumer
+2025-06-25 15:49:28.860 -03:00 [DBG] Hosting starting
+2025-06-25 15:49:28.977 -03:00 [INF] Attempting to connect to RabbitMQ...
+2025-06-25 15:49:29.120 -03:00 [INF] Successfully connected to RabbitMQ.
+2025-06-25 15:49:29.142 -03:00 [INF] Connected to RabbitMQ and listening to queue: sync-events-queue-mercadolivre
+2025-06-25 15:49:29.150 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-25 15:49:29.152 -03:00 [INF] Hosting environment: Development
+2025-06-25 15:49:29.154 -03:00 [INF] Content root path: C:\Users\macie\OneDrive\Documentos\Github\PulseHub\PulseHub.Consumer
+2025-06-25 15:49:29.157 -03:00 [DBG] Hosting started
+2025-06-25 15:50:48.334 -03:00 [INF] Received message: {"EventId":"ff3e192f-feb5-43df-b7f7-d7d769171fb5","QueueMessageId":"4a6a76d0-00eb-409c-8dac-94b5ecf153d7","EventType":"ProductCreated","Timestamp":"2025-06-25T18:50:48.3170255Z","Data":{"ProductId":"62ead61a-5093-4d7c-a80f-6d367cf9c7ab","Name":"string","Description":"string","Price":250,"Stock":0,"CreatedAt":"2025-06-25T18:50:45.2861108Z","UpdatedAt":"2025-06-25T18:50:45.2861414Z","IsActive":true}}
+2025-06-25 15:50:48.580 -03:00 [DBG] An 'IServiceProvider' was created for internal use by Entity Framework.
+2025-06-25 15:50:48.617 -03:00 [INF] Starting message processing...
+2025-06-25 15:50:48.789 -03:00 [INF] Handling EventId: "ff3e192f-feb5-43df-b7f7-d7d769171fb5"
+2025-06-25 15:50:50.223 -03:00 [WRN] The 'bool' property 'IsActive' on entity type 'Product' is configured with a database-generated default. This default will always be used for inserts when the property has the value 'false', since this is the CLR default for the 'bool' type. Consider using the nullable 'bool?' type instead so that the default will only be used for inserts when the property value is 'null'.
+2025-06-25 15:50:50.305 -03:00 [INF] Entity Framework Core 5.0.17 initialized 'PulseHubDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+2025-06-25 15:50:50.489 -03:00 [DBG] Compiling query expression: 
+'DbSet<QueueMessage>()
+    .AsNoTracking()
+    .FirstOrDefault(e => e.QueueMessageId == __id_0)'
+2025-06-25 15:50:50.627 -03:00 [DBG] Generated query execution expression: 
+'queryContext => ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync<QueueMessage>(
+    asyncEnumerable: new SingleQueryingEnumerable<QueueMessage>(
+        (RelationalQueryContext)queryContext, 
+        RelationalCommandCache.SelectExpression(
+            Projection Mapping:
+                EmptyProjectionMember -> Dictionary<IProperty, int> { [Property: QueueMessage.QueueMessageId (Guid) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: QueueMessage.Channel (string) Required MaxLength(100), 1], [Property: QueueMessage.ErrorMessage (string), 2], [Property: QueueMessage.IsProcessed (bool) Required ValueGenerated.OnAdd, 3], [Property: QueueMessage.LastAttemptAt (Nullable<DateTime>), 4], [Property: QueueMessage.Payload (string) Required, 5], [Property: QueueMessage.PublishedAt (DateTime) Required ValueGenerated.OnAdd, 6], [Property: QueueMessage.RetryCount (int) Required, 7], [Property: QueueMessage.Status (QueueMessageStatus) Required, 8], [Property: QueueMessage.SyncEventId (Guid) Required FK Index, 9], }
+            SELECT TOP(1) q.QueueMessageId, q.Channel, q.ErrorMessage, q.IsProcessed, q.LastAttemptAt, q.Payload, q.PublishedAt, q.RetryCount, q.Status, q.SyncEventId
+            FROM QueueMessages AS q
+            WHERE q.QueueMessageId == @__id_0), 
+        Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, QueueMessage>, 
+        PulseHub.Infrastructure.Data.PulseHubDbContext, 
+        False, 
+        False
+    ), 
+    cancellationToken: queryContext.CancellationToken)'
+2025-06-25 15:50:50.664 -03:00 [DBG] Creating DbCommand for 'ExecuteReader'.
+2025-06-25 15:50:50.691 -03:00 [DBG] Created DbCommand for 'ExecuteReader' (26ms).
+2025-06-25 15:50:50.703 -03:00 [DBG] Opening connection to database 'PulseHubDb' on server 'Fudjin\SQLEXPRESS'.
+2025-06-25 15:50:50.962 -03:00 [DBG] Opened connection to database 'PulseHubDb' on server 'Fudjin\SQLEXPRESS'.
+2025-06-25 15:50:50.973 -03:00 [DBG] Executing DbCommand [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [q].[QueueMessageId], [q].[Channel], [q].[ErrorMessage], [q].[IsProcessed], [q].[LastAttemptAt], [q].[Payload], [q].[PublishedAt], [q].[RetryCount], [q].[Status], [q].[SyncEventId]
+FROM [QueueMessages] AS [q]
+WHERE [q].[QueueMessageId] = @__id_0
+2025-06-25 15:50:51.016 -03:00 [INF] Executed DbCommand (46ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [q].[QueueMessageId], [q].[Channel], [q].[ErrorMessage], [q].[IsProcessed], [q].[LastAttemptAt], [q].[Payload], [q].[PublishedAt], [q].[RetryCount], [q].[Status], [q].[SyncEventId]
+FROM [QueueMessages] AS [q]
+WHERE [q].[QueueMessageId] = @__id_0
+2025-06-25 15:50:51.041 -03:00 [DBG] A data reader was disposed.
+2025-06-25 15:50:51.045 -03:00 [DBG] Closing connection to database 'PulseHubDb' on server 'Fudjin\SQLEXPRESS'.
+2025-06-25 15:50:51.052 -03:00 [DBG] Closed connection to database 'PulseHubDb' on server 'Fudjin\SQLEXPRESS'.
+2025-06-25 15:50:51.122 -03:00 [DBG] Context 'PulseHubDbContext' started tracking 'QueueMessage' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-06-25 15:50:51.125 -03:00 [INF] QueueMessage "4a6a76d0-00eb-409c-8dac-94b5ecf153d7" processed successfully
+2025-06-25 15:50:51.130 -03:00 [DBG] SaveChanges starting for 'PulseHubDbContext'.
+2025-06-25 15:50:51.134 -03:00 [DBG] DetectChanges starting for 'PulseHubDbContext'.
+2025-06-25 15:50:51.142 -03:00 [DBG] DetectChanges completed for 'PulseHubDbContext'.
+2025-06-25 15:50:51.157 -03:00 [DBG] Opening connection to database 'PulseHubDb' on server 'Fudjin\SQLEXPRESS'.
+2025-06-25 15:50:51.161 -03:00 [DBG] Opened connection to database 'PulseHubDb' on server 'Fudjin\SQLEXPRESS'.
+2025-06-25 15:50:51.165 -03:00 [DBG] Beginning transaction with isolation level 'Unspecified'.
+2025-06-25 15:50:51.173 -03:00 [DBG] Began transaction with isolation level 'ReadCommitted'.
+2025-06-25 15:50:51.219 -03:00 [DBG] Creating DbCommand for 'ExecuteReader'.
+2025-06-25 15:50:51.221 -03:00 [DBG] Created DbCommand for 'ExecuteReader' (2ms).
+2025-06-25 15:50:51.226 -03:00 [DBG] Executing DbCommand [Parameters=[@p9='?' (DbType = Guid), @p0='?' (Size = 100), @p1='?' (Size = 4000), @p2='?' (DbType = Boolean), @p3='?' (DbType = DateTime2), @p4='?' (Size = 4000), @p5='?' (DbType = DateTime2), @p6='?' (DbType = Int32), @p7='?' (DbType = Int32), @p8='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+UPDATE [QueueMessages] SET [Channel] = @p0, [ErrorMessage] = @p1, [IsProcessed] = @p2, [LastAttemptAt] = @p3, [Payload] = @p4, [PublishedAt] = @p5, [RetryCount] = @p6, [Status] = @p7, [SyncEventId] = @p8
+WHERE [QueueMessageId] = @p9;
+SELECT @@ROWCOUNT;
+2025-06-25 15:50:51.240 -03:00 [INF] Executed DbCommand (14ms) [Parameters=[@p9='?' (DbType = Guid), @p0='?' (Size = 100), @p1='?' (Size = 4000), @p2='?' (DbType = Boolean), @p3='?' (DbType = DateTime2), @p4='?' (Size = 4000), @p5='?' (DbType = DateTime2), @p6='?' (DbType = Int32), @p7='?' (DbType = Int32), @p8='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+UPDATE [QueueMessages] SET [Channel] = @p0, [ErrorMessage] = @p1, [IsProcessed] = @p2, [LastAttemptAt] = @p3, [Payload] = @p4, [PublishedAt] = @p5, [RetryCount] = @p6, [Status] = @p7, [SyncEventId] = @p8
+WHERE [QueueMessageId] = @p9;
+SELECT @@ROWCOUNT;
+2025-06-25 15:50:51.248 -03:00 [DBG] A data reader was disposed.
+2025-06-25 15:50:51.252 -03:00 [DBG] Committing transaction.
+2025-06-25 15:50:51.256 -03:00 [DBG] Committed transaction.
+2025-06-25 15:50:51.259 -03:00 [DBG] Closing connection to database 'PulseHubDb' on server 'Fudjin\SQLEXPRESS'.
+2025-06-25 15:50:51.262 -03:00 [DBG] Closed connection to database 'PulseHubDb' on server 'Fudjin\SQLEXPRESS'.
+2025-06-25 15:50:51.266 -03:00 [DBG] Disposing transaction.
+2025-06-25 15:50:51.275 -03:00 [DBG] An entity of type 'QueueMessage' tracked by 'PulseHubDbContext' changed state from '"Modified"' to '"Unchanged"'. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-06-25 15:50:51.281 -03:00 [DBG] SaveChanges completed for 'PulseHubDbContext' with 1 entities written to the database.
+2025-06-25 15:50:51.289 -03:00 [DBG] Compiling query expression: 
+'DbSet<QueueMessage>()
+    .AsNoTracking()
+    .Where(q => q.SyncEventId == __syncEventId_0)'
+2025-06-25 15:50:51.294 -03:00 [DBG] Generated query execution expression: 
+'queryContext => new SingleQueryingEnumerable<QueueMessage>(
+    (RelationalQueryContext)queryContext, 
+    RelationalCommandCache.SelectExpression(
+        Projection Mapping:
+            EmptyProjectionMember -> Dictionary<IProperty, int> { [Property: QueueMessage.QueueMessageId (Guid) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: QueueMessage.Channel (string) Required MaxLength(100), 1], [Property: QueueMessage.ErrorMessage (string), 2], [Property: QueueMessage.IsProcessed (bool) Required ValueGenerated.OnAdd, 3], [Property: QueueMessage.LastAttemptAt (Nullable<DateTime>), 4], [Property: QueueMessage.Payload (string) Required, 5], [Property: QueueMessage.PublishedAt (DateTime) Required ValueGenerated.OnAdd, 6], [Property: QueueMessage.RetryCount (int) Required, 7], [Property: QueueMessage.Status (QueueMessageStatus) Required, 8], [Property: QueueMessage.SyncEventId (Guid) Required FK Index, 9], }
+        SELECT q.QueueMessageId, q.Channel, q.ErrorMessage, q.IsProcessed, q.LastAttemptAt, q.Payload, q.PublishedAt, q.RetryCount, q.Status, q.SyncEventId
+        FROM QueueMessages AS q
+        WHERE q.SyncEventId == @__syncEventId_0), 
+    Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, QueueMessage>, 
+    PulseHub.Infrastructure.Data.PulseHubDbContext, 
+    False, 
+    False
+)'
+2025-06-25 15:50:51.297 -03:00 [DBG] Creating DbCommand for 'ExecuteReader'.
+2025-06-25 15:50:51.300 -03:00 [DBG] Created DbCommand for 'ExecuteReader' (2ms).
+2025-06-25 15:50:51.302 -03:00 [DBG] Opening connection to database 'PulseHubDb' on server 'Fudjin\SQLEXPRESS'.
+2025-06-25 15:50:51.305 -03:00 [DBG] Opened connection to database 'PulseHubDb' on server 'Fudjin\SQLEXPRESS'.
+2025-06-25 15:50:51.308 -03:00 [DBG] Executing DbCommand [Parameters=[@__syncEventId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [q].[QueueMessageId], [q].[Channel], [q].[ErrorMessage], [q].[IsProcessed], [q].[LastAttemptAt], [q].[Payload], [q].[PublishedAt], [q].[RetryCount], [q].[Status], [q].[SyncEventId]
+FROM [QueueMessages] AS [q]
+WHERE [q].[SyncEventId] = @__syncEventId_0
+2025-06-25 15:50:51.315 -03:00 [INF] Executed DbCommand (7ms) [Parameters=[@__syncEventId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [q].[QueueMessageId], [q].[Channel], [q].[ErrorMessage], [q].[IsProcessed], [q].[LastAttemptAt], [q].[Payload], [q].[PublishedAt], [q].[RetryCount], [q].[Status], [q].[SyncEventId]
+FROM [QueueMessages] AS [q]
+WHERE [q].[SyncEventId] = @__syncEventId_0
+2025-06-25 15:50:51.320 -03:00 [DBG] A data reader was disposed.
+2025-06-25 15:50:51.321 -03:00 [DBG] Closing connection to database 'PulseHubDb' on server 'Fudjin\SQLEXPRESS'.
+2025-06-25 15:50:51.324 -03:00 [DBG] Closed connection to database 'PulseHubDb' on server 'Fudjin\SQLEXPRESS'.
+2025-06-25 15:50:51.327 -03:00 [INF] Message processed successfully.
+2025-06-25 15:50:51.329 -03:00 [INF] Message processed successfully.
+2025-06-25 15:50:51.332 -03:00 [DBG] 'PulseHubDbContext' disposed.
+2025-06-25 15:51:29.230 -03:00 [INF] Application is shutting down...
+2025-06-25 15:51:29.231 -03:00 [DBG] Hosting stopping
+2025-06-25 15:51:29.234 -03:00 [DBG] Hosting stopped
