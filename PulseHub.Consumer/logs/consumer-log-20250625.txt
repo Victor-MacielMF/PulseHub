@@ -116,3 +116,151 @@ WHERE [q].[SyncEventId] = @__syncEventId_0
 2025-06-25 15:51:29.230 -03:00 [INF] Application is shutting down...
 2025-06-25 15:51:29.231 -03:00 [DBG] Hosting stopping
 2025-06-25 15:51:29.234 -03:00 [DBG] Hosting stopped
+2025-06-25 16:01:05.399 -03:00 [INF] Starting PulseHub.Consumer
+2025-06-25 16:01:07.864 -03:00 [DBG] Hosting starting
+2025-06-25 16:01:07.884 -03:00 [INF] Attempting to connect to RabbitMQ...
+2025-06-25 16:01:07.965 -03:00 [INF] Successfully connected to RabbitMQ.
+2025-06-25 16:01:07.982 -03:00 [INF] Connected to RabbitMQ and listening to queue: sync-events-queue-mercadolivre
+2025-06-25 16:01:08.022 -03:00 [INF] Now listening on: http://localhost:8081
+2025-06-25 16:01:08.024 -03:00 [DBG] Loaded hosting startup assembly PulseHub.Consumer
+2025-06-25 16:01:08.026 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-25 16:01:08.028 -03:00 [INF] Hosting environment: Development
+2025-06-25 16:01:08.030 -03:00 [INF] Content root path: C:\Users\macie\OneDrive\Documentos\Github\PulseHub\PulseHub.Consumer
+2025-06-25 16:01:08.032 -03:00 [DBG] Hosting started
+2025-06-25 16:01:16.868 -03:00 [DBG] Connection id "0HNDK3AKTUOQA" accepted.
+2025-06-25 16:01:16.872 -03:00 [DBG] Connection id "0HNDK3AKTUOQA" started.
+2025-06-25 16:01:16.874 -03:00 [DBG] Connection id "0HNDK3AKTUOQB" accepted.
+2025-06-25 16:01:16.878 -03:00 [DBG] Connection id "0HNDK3AKTUOQB" started.
+2025-06-25 16:01:16.918 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8081/health - -
+2025-06-25 16:01:16.924 -03:00 [DBG] Wildcard detected, all requests with hosts will be allowed.
+2025-06-25 16:01:16.938 -03:00 [DBG] 1 candidate(s) found for the request path '/health'
+2025-06-25 16:01:16.943 -03:00 [DBG] Request matched endpoint 'Health checks'
+2025-06-25 16:01:16.948 -03:00 [INF] Executing endpoint 'Health checks'
+2025-06-25 16:01:16.953 -03:00 [DBG] Running health checks
+2025-06-25 16:01:16.962 -03:00 [INF] Executed endpoint 'Health checks'
+2025-06-25 16:01:16.968 -03:00 [ERR] Connection id "0HNDK3AKTUOQA", Request id "0HNDK3AKTUOQA:00000002": An unhandled exception was thrown by the application.
+System.ArgumentNullException: Value cannot be null. (Parameter 'uriString')
+   at System.Uri..ctor(String uriString)
+   at Microsoft.Extensions.DependencyInjection.RabbitMQHealthCheckBuilderExtensions.<>c__DisplayClass1_0.<AddRabbitMQ>b__0(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite singletonCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.RabbitMQHealthCheckBuilderExtensions.<>c.<AddRabbitMQ>b__1_1(IServiceProvider sp)
+   at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.RunCheckAsync(IServiceScope scope, HealthCheckRegistration registration, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.CheckHealthAsync(Func`2 predicate, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckMiddleware.InvokeAsync(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+2025-06-25 16:01:17.093 -03:00 [DBG] Connection id "0HNDK3AKTUOQA" completed keep alive response.
+2025-06-25 16:01:17.096 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:8081/health - - - 500 0 - 180.4592ms
+2025-06-25 16:01:31.117 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8081/health - -
+2025-06-25 16:01:31.120 -03:00 [DBG] 1 candidate(s) found for the request path '/health'
+2025-06-25 16:01:31.124 -03:00 [DBG] Request matched endpoint 'Health checks'
+2025-06-25 16:01:31.126 -03:00 [INF] Executing endpoint 'Health checks'
+2025-06-25 16:01:31.129 -03:00 [DBG] Running health checks
+2025-06-25 16:01:31.132 -03:00 [INF] Executed endpoint 'Health checks'
+2025-06-25 16:01:31.134 -03:00 [ERR] Connection id "0HNDK3AKTUOQA", Request id "0HNDK3AKTUOQA:00000003": An unhandled exception was thrown by the application.
+System.ArgumentNullException: Value cannot be null. (Parameter 'uriString')
+   at System.Uri..ctor(String uriString)
+   at Microsoft.Extensions.DependencyInjection.RabbitMQHealthCheckBuilderExtensions.<>c__DisplayClass1_0.<AddRabbitMQ>b__0(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite singletonCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.RabbitMQHealthCheckBuilderExtensions.<>c.<AddRabbitMQ>b__1_1(IServiceProvider sp)
+   at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.RunCheckAsync(IServiceScope scope, HealthCheckRegistration registration, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService.CheckHealthAsync(Func`2 predicate, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckMiddleware.InvokeAsync(HttpContext httpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+2025-06-25 16:01:31.146 -03:00 [DBG] Connection id "0HNDK3AKTUOQA" completed keep alive response.
+2025-06-25 16:01:31.149 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:8081/health - - - 500 0 - 31.6616ms
+2025-06-25 16:02:19.133 -03:00 [DBG] Connection id "0HNDK3AKTUOQB" received FIN.
+2025-06-25 16:02:19.137 -03:00 [DBG] Connection id "0HNDK3AKTUOQB" disconnecting.
+2025-06-25 16:02:19.139 -03:00 [DBG] Connection id "0HNDK3AKTUOQB" sending FIN because: "The client closed the connection."
+2025-06-25 16:02:19.147 -03:00 [DBG] Connection id "0HNDK3AKTUOQB" stopped.
+2025-06-25 16:03:00.771 -03:00 [INF] Application is shutting down...
+2025-06-25 16:03:00.771 -03:00 [DBG] Hosting stopping
+2025-06-25 16:03:00.782 -03:00 [DBG] Connection id "0HNDK3AKTUOQA" disconnecting.
+2025-06-25 16:03:00.784 -03:00 [DBG] Connection id "0HNDK3AKTUOQA" stopped.
+2025-06-25 16:03:00.786 -03:00 [DBG] Connection id "0HNDK3AKTUOQA" sending FIN because: "The Socket transport's send loop completed gracefully."
+2025-06-25 16:03:00.793 -03:00 [DBG] Hosting stopped
+2025-06-25 16:07:20.648 -03:00 [INF] Starting PulseHub.Consumer
+2025-06-25 16:07:20.768 -03:00 [DBG] Hosting starting
+2025-06-25 16:07:20.783 -03:00 [INF] Attempting to connect to RabbitMQ...
+2025-06-25 16:07:20.872 -03:00 [INF] Successfully connected to RabbitMQ.
+2025-06-25 16:07:20.886 -03:00 [INF] Connected to RabbitMQ and listening to queue: sync-events-queue-mercadolivre
+2025-06-25 16:07:20.915 -03:00 [INF] Now listening on: http://localhost:8081
+2025-06-25 16:07:20.917 -03:00 [DBG] Loaded hosting startup assembly PulseHub.Consumer
+2025-06-25 16:07:20.920 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-25 16:07:20.922 -03:00 [INF] Hosting environment: Development
+2025-06-25 16:07:20.924 -03:00 [INF] Content root path: C:\Users\macie\OneDrive\Documentos\Github\PulseHub\PulseHub.Consumer
+2025-06-25 16:07:20.925 -03:00 [DBG] Hosting started
+2025-06-25 16:08:17.996 -03:00 [DBG] Connection id "0HNDK3EIE5A3J" accepted.
+2025-06-25 16:08:18.000 -03:00 [DBG] Connection id "0HNDK3EIE5A3J" started.
+2025-06-25 16:08:18.029 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8081/health - -
+2025-06-25 16:08:18.034 -03:00 [DBG] Wildcard detected, all requests with hosts will be allowed.
+2025-06-25 16:08:18.047 -03:00 [DBG] 1 candidate(s) found for the request path '/health'
+2025-06-25 16:08:18.051 -03:00 [DBG] Request matched endpoint 'Health checks'
+2025-06-25 16:08:18.055 -03:00 [INF] Executing endpoint 'Health checks'
+2025-06-25 16:08:18.060 -03:00 [DBG] Running health checks
+2025-06-25 16:08:18.065 -03:00 [DBG] Running health check rabbitmq
+2025-06-25 16:08:18.085 -03:00 [DBG] Health check rabbitmq completed after 16.6552ms with status "Healthy" and description 'null'
+2025-06-25 16:08:18.101 -03:00 [DBG] Health check processing completed after 37.4776ms with combined status "Healthy"
+2025-06-25 16:08:18.109 -03:00 [INF] Executed endpoint 'Health checks'
+2025-06-25 16:08:18.112 -03:00 [DBG] Connection id "0HNDK3EIE5A3J" completed keep alive response.
+2025-06-25 16:08:18.113 -03:00 [DBG] Connection id "0HNDK3EIE5A3J" received FIN.
+2025-06-25 16:08:18.115 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:8081/health - - - 200 - text/plain 87.6888ms
+2025-06-25 16:08:18.121 -03:00 [DBG] Connection id "0HNDK3EIE5A3J" disconnecting.
+2025-06-25 16:08:18.126 -03:00 [DBG] Connection id "0HNDK3EIE5A3J" sending FIN because: "The client closed the connection."
+2025-06-25 16:08:18.134 -03:00 [DBG] Connection id "0HNDK3EIE5A3J" stopped.
+2025-06-25 16:08:29.179 -03:00 [DBG] Connection id "0HNDK3EIE5A3K" accepted.
+2025-06-25 16:08:29.182 -03:00 [DBG] Connection id "0HNDK3EIE5A3K" started.
+2025-06-25 16:08:29.182 -03:00 [DBG] Connection id "0HNDK3EIE5A3L" accepted.
+2025-06-25 16:08:29.188 -03:00 [DBG] Connection id "0HNDK3EIE5A3L" started.
+2025-06-25 16:08:29.193 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8081/health - -
+2025-06-25 16:08:29.196 -03:00 [DBG] 1 candidate(s) found for the request path '/health'
+2025-06-25 16:08:29.200 -03:00 [DBG] Request matched endpoint 'Health checks'
+2025-06-25 16:08:29.203 -03:00 [INF] Executing endpoint 'Health checks'
+2025-06-25 16:08:29.206 -03:00 [DBG] Running health checks
+2025-06-25 16:08:29.209 -03:00 [DBG] Running health check rabbitmq
+2025-06-25 16:08:29.214 -03:00 [DBG] Health check rabbitmq completed after 4.8249ms with status "Healthy" and description 'null'
+2025-06-25 16:08:29.218 -03:00 [DBG] Health check processing completed after 11.7079ms with combined status "Healthy"
+2025-06-25 16:08:29.221 -03:00 [INF] Executed endpoint 'Health checks'
+2025-06-25 16:08:29.223 -03:00 [DBG] Connection id "0HNDK3EIE5A3K" completed keep alive response.
+2025-06-25 16:08:29.226 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:8081/health - - - 200 - text/plain 33.1184ms
+2025-06-25 16:08:29.518 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8081/favicon.ico - -
+2025-06-25 16:08:29.520 -03:00 [DBG] No candidates found for the request path '/favicon.ico'
+2025-06-25 16:08:29.523 -03:00 [DBG] Request did not match any endpoints
+2025-06-25 16:08:29.525 -03:00 [DBG] Connection id "0HNDK3EIE5A3K" completed keep alive response.
+2025-06-25 16:08:29.529 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:8081/favicon.ico - - - 404 0 - 10.7981ms
+2025-06-25 16:08:36.816 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8081/health - -
+2025-06-25 16:08:36.818 -03:00 [DBG] 1 candidate(s) found for the request path '/health'
+2025-06-25 16:08:36.821 -03:00 [DBG] Request matched endpoint 'Health checks'
+2025-06-25 16:08:36.825 -03:00 [INF] Executing endpoint 'Health checks'
+2025-06-25 16:08:36.831 -03:00 [DBG] Running health checks
+2025-06-25 16:08:36.835 -03:00 [DBG] Running health check rabbitmq
+2025-06-25 16:08:36.844 -03:00 [DBG] Health check rabbitmq completed after 8.3895ms with status "Healthy" and description 'null'
+2025-06-25 16:08:36.848 -03:00 [DBG] Health check processing completed after 16.693ms with combined status "Healthy"
+2025-06-25 16:08:36.851 -03:00 [INF] Executed endpoint 'Health checks'
+2025-06-25 16:08:36.854 -03:00 [DBG] Connection id "0HNDK3EIE5A3K" completed keep alive response.
+2025-06-25 16:08:36.858 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:8081/health - - - 200 - text/plain 41.9365ms
+2025-06-25 16:09:29.342 -03:00 [DBG] Connection id "0HNDK3EIE5A3L" received FIN.
+2025-06-25 16:09:29.344 -03:00 [DBG] Connection id "0HNDK3EIE5A3L" disconnecting.
+2025-06-25 16:09:29.347 -03:00 [DBG] Connection id "0HNDK3EIE5A3L" sending FIN because: "The client closed the connection."
+2025-06-25 16:09:29.366 -03:00 [DBG] Connection id "0HNDK3EIE5A3L" stopped.

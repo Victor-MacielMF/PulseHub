@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
 using PulseHub.Consumer.Extensions;
 using PulseHub.Consumer.MercadoLivre.Services;
 using PulseHub.Infrastructure.Extensions;
@@ -14,18 +16,19 @@ namespace PulseHub.Consumer
     {
         public static void Main(string[] args)
         {
-            // Configuração do Serilog
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .Build();
+
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.Console()
-                .WriteTo.File("logs/consumer-log-.txt", rollingInterval: RollingInterval.Day)
-                .Enrich.FromLogContext()
+                .ReadFrom.Configuration(configuration)
                 .CreateLogger();
 
             try
             {
                 Log.Information("Starting PulseHub.Consumer");
-                CreateHostBuilder(args).Build().Run();
+                CreateHostBuilder(args, configuration).Build().Run();
             }
             catch (Exception ex)
             {
@@ -37,26 +40,39 @@ namespace PulseHub.Consumer
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        public static IHostBuilder CreateHostBuilder(string[] args, IConfiguration configuration) =>
             Host.CreateDefaultBuilder(args)
-                .UseSerilog() // <- chave para ativar Serilog
+                .UseSerilog()
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                          .AddEnvironmentVariables();
+                    config.AddConfiguration(configuration);
                 })
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    var configuration = hostContext.Configuration;
+                    webBuilder.UseConfiguration(configuration); // lê o "Urls" do appsettings.json
 
-                    services.Configure<RabbitMQSettings>(
-                        configuration.GetSection("RabbitMQ"));
+                    webBuilder.ConfigureServices((context, services) =>
+                    {
+                        services.Configure<RabbitMQSettings>(
+                            configuration.GetSection("RabbitMQ"));
 
-                    services.AddInfrastructure(configuration);
-                    services.AddConsumerServices(configuration);
+                        services.AddInfrastructure(configuration);
+                        services.AddConsumerServices(configuration);
 
-                    services.AddHostedService<MercadoLivreQueueConsumerService>();
-                    //services.AddHostedService<Worker>();
+                        services.AddHealthChecks()
+                                .AddRabbitMQ(rabbitConnectionString: configuration.GetSection("RabbitMQ")["ConnectionString"]);
+
+                        services.AddHostedService<MercadoLivreQueueConsumerService>();
+                    });
+
+                    webBuilder.Configure(app =>
+                    {
+                        app.UseRouting();
+                        app.UseEndpoints(endpoints =>
+                        {
+                            endpoints.MapHealthChecks("/health");
+                        });
+                    });
                 });
     }
 }
